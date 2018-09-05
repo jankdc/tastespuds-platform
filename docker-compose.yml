@@ -1,0 +1,23 @@
+version: '3.4'
+
+services:
+  api:
+    build: api
+
+    environment:
+      - PORT
+      - NODE_ENV
+      - DATABASE_URL
+
+    ports:
+      - "8080"
+
+  db:
+    build: db
+
+    environment:
+      - POSTGRES_DB
+      - POSTGRES_HOST
+      - POSTGRES_USER
+      - POSTGRES_TEST_DB
+      - POSTGRES_PASSWORD
