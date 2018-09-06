@@ -1,6 +1,6 @@
 import * as Koa from 'koa';
 import * as jwtDecode from 'jwt-decode';
-import * as auth0Client from './auth0Client';
+import * as auth0 from './auth0';
 import database from './database';
 
 export async function getUserById(ctx: Koa.Context) {
@@ -23,8 +23,8 @@ export async function createUser(ctx: Koa.Context) {
     return ctx.throw(422, 'Missing `redirectUri` in request body');
   }
 
-  const tokens = await auth0Client.getTokens(requestBody.code, requestBody.redirectUri);
-  const idToken: auth0Client.IdToken = jwtDecode(tokens.id_token);
+  const tokens = await auth0.getTokens(requestBody.code, requestBody.redirectUri);
+  const idToken: auth0.IdToken = jwtDecode(tokens.id_token);
   const queryStr = `
     INSERT INTO
       carabao.user (id)
