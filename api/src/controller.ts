@@ -3,10 +3,6 @@ import * as jwtDecode from 'jwt-decode';
 import * as auth0 from './auth0';
 import database from './database';
 
-export async function getUserById(ctx: Koa.Context) {
-  ctx.body = 'Hello, user!';
-}
-
 export async function createUser(ctx: Koa.Context) {
   interface RequestBody {
     code?: string,
