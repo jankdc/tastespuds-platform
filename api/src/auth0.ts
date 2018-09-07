@@ -1,5 +1,5 @@
 import * as env from 'env-var';
-import * as request from 'request-promise-native';
+import * as got from 'got';
 
 const AUTH0_CLIENT_ID = env.get('AUTH0_CLIENT_ID').required().asString();
 const AUTH0_DOMAIN_URL = env.get('AUTH0_DOMAIN_URL').required().asUrlString();
@@ -41,14 +41,9 @@ export async function getTokens(code: string, redirectUri: string) {
     code
   };
 
-  const options: request.OptionsWithUri = {
-    method: 'POST',
-    json: true,
-    body,
-    uri: `${AUTH0_DOMAIN_URL}/oauth/token`
-  };
+  const response = await got.post(`${AUTH0_DOMAIN_URL}/oauth/token`, {
+    body: JSON.stringify(body)
+  });
 
-  const response: SignInTokens = await request(options);
-
-  return response;
+  return JSON.parse(response.body) as SignInTokens;
 }
