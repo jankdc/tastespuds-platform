@@ -16,7 +16,7 @@
   "dependencies": {
     "env-var": "^3.3.0",
     "got": "^9.2.1",
-    "jwt-decode": "2.2.0",
+    "jwt-decode": "^2.2.0",
     "koa": "^2.5.2",
     "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
