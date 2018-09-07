@@ -23,11 +23,11 @@ export async function createUser(ctx: Koa.Context) {
   const idToken: auth0.IdToken = jwtDecode(tokens.id_token);
   const queryStr = `
     INSERT INTO
-      carabao.user (id)
+      tastespuds.user (id)
     VALUES
       ($1)
     ON CONFLICT (id)
-      DO NOTHING
+      DO UPDATE SET id = EXCLUDED.id
     RETURNING *;
   `;
 

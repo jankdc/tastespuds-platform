@@ -5,3 +5,6 @@ services:
     command: npm run watch
     volumes:
       - ./api/src:/node/src
+      - ./api/__tests__:/node/__tests__
+      - ./api/__mocks__:/node/__mocks__
+      - ./api/__fixtures__:/node/__fixtures__

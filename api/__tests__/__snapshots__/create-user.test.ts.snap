@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`create a new user 1`] = `
+Object {
+  "tokens": Object {
+    "accessToken": "some-access-token",
+    "idToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+    "refreshToken": "some-refresh-token",
+  },
+  "user": Object {
+    "id": "1234567890",
+  },
+}
+`;
+
+exports[`respond with a 422 if \`code\` is missing 1`] = `
+Object {
+  "error": "Missing \`code\` in request body",
+}
+`;
+
+exports[`respond with a 422 if \`redirectUri\` is missing 1`] = `
+Object {
+  "error": "Missing \`redirectUri\` in request body",
+}
+`;
+
+exports[`respond with the same user if created twice 1`] = `
+Object {
+  "tokens": Object {
+    "accessToken": "some-access-token",
+    "idToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+    "refreshToken": "some-refresh-token",
+  },
+  "user": Object {
+    "id": "1234567890",
+  },
+}
+`;
