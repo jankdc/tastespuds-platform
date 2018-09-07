@@ -8,15 +8,21 @@ First of all, you need to have the required environment variables set, specified
 
 When you're done with that, run this:
 
-`./dev.sh up -d --build`
+`./scripts/dev.sh up -d --build`
 
 You should be good to go!
+
+## Teardown
+
+When something seems fishy, bomb it:
+
+`./scripts/dev.sh down --rmi all`
 
 ## Testing
 
 ```
 # Usage:
-./dev.sh exec api yarn test
+./scripts/dev.sh exec api npm test
 ```
 
 ## Database Migration
@@ -25,5 +31,5 @@ If you ever want to try your new migration files against the existing container,
 
 ```
 # Usage:
-./dev.sh exec db ./migrate.sh
+./scripts/dev.sh exec db ./migrate.sh
 ```
