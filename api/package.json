@@ -6,7 +6,7 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "watch": "nodemon -w src/**/* -e ts -x npm start",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "Jan Karlo Dela Cruz",
   "license": "MIT",
@@ -24,13 +24,18 @@
     "request-promise-native": "^1.0.5"
   },
   "devDependencies": {
+    "@types/jest": "^23.3.1",
     "@types/jwt-decode": "2.2.1",
     "@types/koa": "^2.0.46",
     "@types/koa-bodyparser": "^5.0.1",
     "@types/koa-router": "^7.0.31",
     "@types/pg": "^7.4.10",
     "@types/request-promise-native": "1.0.15",
+    "@types/supertest": "^2.0.5",
+    "jest": "^23.5.0",
     "nodemon": "^1.18.4",
+    "supertest": "^3.3.0",
+    "ts-jest": "^23.1.4",
     "ts-node": "^7.0.1",
     "typescript": "^3.0.3"
   }
