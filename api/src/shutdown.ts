@@ -37,7 +37,7 @@ function createShutdownMiddleware(server: http.Server): Koa.Middleware {
   process.on('SIGUSR2', () => gracefulExit('SIGUSR2'));
   process.on('SIGTERM', () => gracefulExit('SIGTERM'));
 
-  return function shutdownMiddleware(ctx, next) {
+  return async function shutdownMiddleware(ctx, next) {
     if (!shuttingDown) {
       return next();
     }
