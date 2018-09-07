@@ -9,17 +9,17 @@ export async function createUser(ctx: Koa.Context) {
     redirectUri?: string
   }
 
-  const requestBody = ctx.request.body as RequestBody;
+  const { code, redirectUri } = ctx.request.body as RequestBody;
 
-  if (typeof requestBody.code !== 'string') {
+  if (typeof code !== 'string') {
     return ctx.throw(422, 'Missing `code` in request body');
   }
 
-  if (typeof requestBody.redirectUri !== 'string') {
+  if (typeof redirectUri !== 'string') {
     return ctx.throw(422, 'Missing `redirectUri` in request body');
   }
 
-  const tokens = await auth0.getTokens(requestBody.code, requestBody.redirectUri);
+  const tokens = await auth0.getTokens(code, redirectUri);
   const idToken: auth0.IdToken = jwtDecode(tokens.id_token);
   const queryStr = `
     INSERT INTO
