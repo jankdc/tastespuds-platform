@@ -8,3 +8,6 @@ services:
       - ./api/__tests__:/node/__tests__
       - ./api/__mocks__:/node/__mocks__
       - ./api/__fixtures__:/node/__fixtures__
+
+    ports:
+      - "9229:9229"

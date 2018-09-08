@@ -2,10 +2,11 @@
   "name": "tastespuds-platform",
   "version": "1.0.0",
   "description": "Tastespuds API Platform",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "scripts": {
-    "start": "ts-node src/index.ts",
-    "watch": "nodemon -w src/**/* -e ts -x npm start",
+    "start": "node -r ts-node/register src/index.ts",
+    "debug": "node -r ts-node/register --inspect=0.0.0.0:9229 --nolazy src/index.ts",
+    "watch": "nodemon -w src -e ts -x npm run debug",
     "test": "jest"
   },
   "author": "Jan Karlo Dela Cruz",
