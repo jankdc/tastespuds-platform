@@ -4,6 +4,7 @@ exports[`create a new user 1`] = `
 Object {
   "tokens": Object {
     "accessToken": "some-access-token",
+    "expiresIn": 1234567,
     "idToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
     "refreshToken": "some-refresh-token",
   },
@@ -29,6 +30,7 @@ exports[`respond with the same user if created twice 1`] = `
 Object {
   "tokens": Object {
     "accessToken": "some-access-token",
+    "expiresIn": 1234567,
     "idToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
     "refreshToken": "some-refresh-token",
   },
