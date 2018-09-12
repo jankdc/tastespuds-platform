@@ -1,3 +1,5 @@
+/* tslint:disable:no-console */
+
 import * as Koa from 'koa';
 import * as http from 'http';
 import database from './database';
@@ -44,7 +46,7 @@ function createShutdownMiddleware(server: http.Server): Koa.Middleware {
 
     ctx.status = 503;
     ctx.set('Connection', 'close');
-    ctx.body = 'Server is in the process of restarting'
+    ctx.body = 'Server is in the process of restarting';
   };
 }
 

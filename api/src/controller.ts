@@ -5,8 +5,8 @@ import database from './database';
 
 export async function createUser(ctx: Koa.Context) {
   interface RequestBody {
-    code?: string,
-    redirectUri?: string
+    code?: string;
+    redirectUri?: string;
   }
 
   const { code, redirectUri } = ctx.request.body as RequestBody;
