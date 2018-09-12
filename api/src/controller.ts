@@ -38,6 +38,7 @@ export async function createUser(ctx: Koa.Context) {
     user: newUser,
     tokens: {
       idToken: tokens.id_token,
+      expiresIn: tokens.expires_in,
       accessToken: tokens.access_token,
       refreshToken: tokens.refresh_token
     }

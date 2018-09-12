@@ -42,8 +42,9 @@ export async function getTokens(code: string, redirectUri: string) {
   };
 
   const response = await got.post(`${AUTH0_DOMAIN_URL}/oauth/token`, {
-    body: JSON.stringify(body)
+    body,
+    json: true
   });
 
-  return JSON.parse(response.body) as SignInTokens;
+  return response.body as SignInTokens;
 }
