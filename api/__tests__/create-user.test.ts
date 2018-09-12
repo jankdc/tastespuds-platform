@@ -86,7 +86,7 @@ test('respond with a 422 if `code` is missing', async () => {
 afterEach(async () => {
   const database = require('../src/database').default;
   const file: string = await readFixture('../__fixtures__/tables.json');
-  const json: Array<string> = JSON.parse(file);
+  const json: string[] = JSON.parse(file);
 
   await database.query(`TRUNCATE ${json.join(',')} RESTART IDENTITY CASCADE`);
 });
