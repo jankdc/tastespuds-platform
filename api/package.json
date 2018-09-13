@@ -7,7 +7,7 @@
     "start": "node -r ts-node/register src/index.ts",
     "debug": "node -r ts-node/register --inspect=0.0.0.0:9229 --nolazy src/index.ts",
     "watch": "nodemon -w src -e ts -x npm run debug",
-    "lint": "tslint -p tsconfig.json",
+    "lint": "tslint -p tsconfig.json src/**/*.ts __tests__/**/*.ts",
     "test": "jest"
   },
   "author": "Jan Karlo Dela Cruz",

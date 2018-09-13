@@ -3,13 +3,11 @@
     "extends": [
         "tslint:recommended"
     ],
-    "jsRules": {},
     "rules": {
         "quotemark": [true, "single"],
         "interface-name": [false],
         "trailing-comma": [false],
         "ordered-imports": [false],
         "object-literal-sort-keys": [false]
-    },
-    "rulesDirectory": []
+    }
 }

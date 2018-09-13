@@ -4,7 +4,7 @@ import * as util from 'util';
 import * as path from 'path';
 import * as request from 'supertest';
 
-async function readFixture(relativePath) {
+async function readFixture(relativePath: string) {
   const fixture = await util.promisify(fs.readFile)(path.resolve(__dirname, relativePath));
   return fixture.toString();
 }
