@@ -1,7 +1,7 @@
-import * as Router from 'koa-router';
-import * as Controller from './controller';
+import * as Router from 'koa-router'
+import * as Controller from './controller'
 
-const router = new Router();
-router.post('/users', Controller.createUser);
+const router = new Router()
+router.post('/users', Controller.createUser)
 
-export const routes = () => router.routes();
+export const routes = () => router.routes()

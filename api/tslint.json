@@ -5,6 +5,7 @@
     ],
     "rules": {
         "quotemark": [true, "single"],
+        "semicolon": [true, "never"],
         "interface-name": [false],
         "trailing-comma": [false],
         "ordered-imports": [false],

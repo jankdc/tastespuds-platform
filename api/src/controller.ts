@@ -1,26 +1,26 @@
-import * as Koa from 'koa';
-import * as jwtDecode from 'jwt-decode';
-import * as auth0 from './auth0';
-import database from './database';
+import * as Koa from 'koa'
+import * as jwtDecode from 'jwt-decode'
+import * as auth0 from './auth0'
+import database from './database'
 
 export async function createUser(ctx: Koa.Context) {
   interface RequestBody {
-    code?: string;
-    redirectUri?: string;
+    code?: string
+    redirectUri?: string
   }
 
-  const { code, redirectUri } = ctx.request.body as RequestBody;
+  const { code, redirectUri } = ctx.request.body as RequestBody
 
   if (typeof code !== 'string') {
-    return ctx.throw(422, 'Missing `code` in request body');
+    return ctx.throw(422, 'Missing `code` in request body')
   }
 
   if (typeof redirectUri !== 'string') {
-    return ctx.throw(422, 'Missing `redirectUri` in request body');
+    return ctx.throw(422, 'Missing `redirectUri` in request body')
   }
 
-  const tokens = await auth0.getTokens(code, redirectUri);
-  const idToken: auth0.IdToken = jwtDecode(tokens.id_token);
+  const tokens = await auth0.getTokens(code, redirectUri)
+  const idToken: auth0.IdToken = jwtDecode(tokens.id_token)
   const queryStr = `
     INSERT INTO
       tastespuds.user (id)
@@ -29,10 +29,10 @@ export async function createUser(ctx: Koa.Context) {
     ON CONFLICT (id)
       DO UPDATE SET id = EXCLUDED.id
     RETURNING *;
-  `;
+  `
 
-  const results = await database.query(queryStr, [idToken.sub]);
-  const newUser = results.rows[0];
+  const results = await database.query(queryStr, [idToken.sub])
+  const newUser = results.rows[0]
 
   ctx.body = {
     user: newUser,
@@ -42,5 +42,5 @@ export async function createUser(ctx: Koa.Context) {
       accessToken: tokens.access_token,
       refreshToken: tokens.refresh_token
     }
-  };
+  }
 }
