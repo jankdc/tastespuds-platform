@@ -18,7 +18,7 @@ beforeAll(async () => {
   getEnvMock.mockImplementation(mockEnv.get)
 
   // mock auth0 call
-  const auth0 = require('../src/auth0')
+  const auth0 = require('../src/clients/auth0')
   const tokensFixture = await readFixture('../__fixtures__/tokens.json')
   const getTokensMock = jest.spyOn(auth0, 'getTokens')
   getTokensMock.mockImplementation(async () => JSON.parse(tokensFixture))
@@ -84,14 +84,14 @@ test('respond with a 422 if `code` is missing', async () => {
 })
 
 afterEach(async () => {
-  const database = require('../src/database').default
+  const database = require('../src/clients/database').default
   const file: string = await readFixture('../__fixtures__/tables.json')
   const json: string[] = JSON.parse(file)
 
-  await database.query(`TRUNCATE ${json.join(',')} RESTART IDENTITY CASCADE`)
+  await database.queryViaText(`TRUNCATE ${json.join(',')} RESTART IDENTITY CASCADE`)
 })
 
 afterAll(async () => {
-  const database = require('../src/database').default
-  await database.end()
+  const database = require('../src/clients/database').default
+  await database.close()
 })

@@ -2,7 +2,7 @@
 
 import * as Koa from 'koa'
 import * as http from 'http'
-import database from './database'
+import database from './clients/database'
 
 function createShutdownMiddleware(server: http.Server): Koa.Middleware {
   const forceTimeout = (30 * 1000) // 30s timeout
@@ -25,7 +25,7 @@ function createShutdownMiddleware(server: http.Server): Koa.Middleware {
     }, forceTimeout)
 
     console.info('Closing database connections...')
-    await database.end()
+    await database.close()
 
     console.info('Closing server connections...')
 

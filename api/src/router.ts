@@ -1,8 +1,9 @@
 import * as Router from 'koa-router'
-import * as Controller from './controller'
+import * as review from './review'
+import * as user from './user'
 
 const router = new Router()
-router.post('/users', Controller.createUser)
-router.get('/reviews', Controller.findHottestReviews)
+router.use(user.routes())
+router.use(review.routes())
 
 export const routes = () => router.routes()
