@@ -11,6 +11,7 @@ services:
       - AUTH0_CLIENT_ID
       - AUTH0_DOMAIN_URL
       - AUTH0_CLIENT_SECRET
+      - GOOGLE_PLACES_API_KEY
 
     ports:
       - "8080:8080"
