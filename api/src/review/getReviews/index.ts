@@ -1,5 +1,6 @@
 import * as Koa from 'koa'
 import * as gplaces from '../../clients/google-places'
+import * as users from '../../clients/auth0-users'
 import * as math from '../../math'
 import database from '../../clients/database'
 
@@ -49,7 +50,17 @@ export default async function getReviews(ctx: Koa.Context) {
 
   hotReviews.sort((reviewA, reviewB) => hotScoreFn(reviewB) - hotScoreFn(reviewA))
 
+  const allUsers = await users.getUsersViaIds(hotReviews.map((r) => r.user_id))
+  const mapsById = (name: string) => (acc: any, item: any) => {
+    const copy = Object.assign({}, item)
+    acc[copy[name]] = copy
+    delete copy[name]
+    return acc
+  }
+
   ctx.body = {
-    reviews: hotReviews
+    reviews: hotReviews,
+    places: allPlaces.reduce(mapsById('place_id'), {}),
+    users: allUsers.reduce(mapsById('user_id'), {})
   }
 }
