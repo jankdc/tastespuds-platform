@@ -9,16 +9,6 @@ const AUTH0_USERS_CLIENT_SECRET = env.get('AUTH0_USERS_CLIENT_SECRET').required(
 let cachedTime: any = null
 let cachedAccess: any = null
 
-export interface UserInfo {
-  email: string
-  email_verified: boolean
-  name: string
-  picture: string
-  user_id: string
-  nickname: string
-  updated_at: string
-}
-
 export interface GetAccessResponse {
   access_token: string
   expires_in: number
@@ -50,11 +40,17 @@ export async function getAccess(): Promise<GetAccessResponse> {
   return cachedAccess
 }
 
-export interface GetUsersResponse {
-  [index: number]: UserInfo
+export interface UserInfo {
+  email: string
+  email_verified: boolean
+  name: string
+  picture: string
+  user_id: string
+  nickname: string
+  updated_at: string
 }
 
-export async function getUsers(userIds: string[]): Promise<GetUsersResponse> {
+export async function getUsersViaIds(userIds: string[]): Promise<UserInfo[]> {
   if (userIds.length > 100) {
     throw new Error('Exceeded max amount of users')
   }
