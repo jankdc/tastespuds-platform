@@ -5,6 +5,6 @@ const router = new Router({
   prefix: '/oauth'
 })
 
-router.post('/', ...loginUser)
+router.post('/login', ...loginUser)
 
-export const routes = router.routes
+export const routes = () => router.routes()

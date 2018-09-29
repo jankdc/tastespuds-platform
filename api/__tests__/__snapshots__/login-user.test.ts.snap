@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`create a new user 1`] = `
+exports[`login a new user 1`] = `
 Object {
   "tokens": Object {
     "accessToken": "some-access-token",
@@ -9,24 +9,31 @@ Object {
     "refreshToken": "some-refresh-token",
   },
   "user": Object {
-    "id": "1234567890",
+    "email": "tastespuds@gmail.com",
+    "email_verified": true,
+    "name": "Jan Awesome Cruz",
+    "picture": "some-picture",
+    "updated_at": "some-date",
+    "user_id": "some-user-id",
   },
 }
 `;
 
 exports[`respond with a 422 if \`code\` is missing 1`] = `
 Object {
-  "error": "Missing \`code\` in request body",
+  "description": "data should have required property 'code'",
+  "error": "INVALID_INPUT",
 }
 `;
 
-exports[`respond with a 422 if \`redirectUri\` is missing 1`] = `
+exports[`respond with a 422 if \`email\` is missing 1`] = `
 Object {
-  "error": "Missing \`redirectUri\` in request body",
+  "description": "data should have required property 'email'",
+  "error": "INVALID_INPUT",
 }
 `;
 
-exports[`respond with the same user if created twice 1`] = `
+exports[`respond with the same user if logged in twice 1`] = `
 Object {
   "tokens": Object {
     "accessToken": "some-access-token",
@@ -35,7 +42,12 @@ Object {
     "refreshToken": "some-refresh-token",
   },
   "user": Object {
-    "id": "1234567890",
+    "email": "tastespuds@gmail.com",
+    "email_verified": true,
+    "name": "Jan Awesome Cruz",
+    "picture": "some-picture",
+    "updated_at": "some-date",
+    "user_id": "some-user-id",
   },
 }
 `;

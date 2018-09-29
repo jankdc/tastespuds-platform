@@ -12,9 +12,8 @@ export function createValidator(schema: any): Koa.Middleware {
       return await next()
     }
 
-    ctx.throw(422, {
-      error: 'invalid-input',
-      description: ajv.errorsText(validate.errors)
+    ctx.throw(422, ajv.errorsText(validate.errors), {
+      id: 'INVALID_INPUT'
     })
   }
 }
