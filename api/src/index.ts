@@ -1,8 +1,7 @@
-import * as env from 'env-var'
+import * as config from './config'
 import server from './server'
 
-const port = env.get('PORT').required().asIntPositive()
-server.listen(port)
+server.listen(config.port)
 
 // tslint:disable-next-line:no-console
-console.info(`App is now listening in port ${port}`)
+console.info(`App is now listening in port ${config.port}`)

@@ -5,6 +5,6 @@ const router = new Router({
   prefix: '/reviews'
 })
 
-router.get('/', getReviews)
+router.get('/', ...getReviews)
 
 export const routes = () => router.routes()

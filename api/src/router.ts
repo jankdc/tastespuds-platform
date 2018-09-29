@@ -1,9 +1,9 @@
 import * as Router from 'koa-router'
-import * as review from './review'
-import * as user from './user'
+import * as reviews from './reviews'
+import * as users from './users'
 
 const router = new Router()
-router.use(user.routes())
-router.use(review.routes())
+router.use(users.routes())
+router.use(reviews.routes())
 
 export const routes = () => router.routes()

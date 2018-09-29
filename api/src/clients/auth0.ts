@@ -1,50 +1,44 @@
-import * as env from 'env-var'
+import * as config from '../config'
 import * as got from 'got'
 
-const AUTH0_CLIENT_ID = env.get('AUTH0_CLIENT_ID').required().asString()
-const AUTH0_DOMAIN_URL = env.get('AUTH0_DOMAIN_URL').required().asUrlString()
-const AUTH0_CLIENT_SECRET = env.get('AUTH0_CLIENT_SECRET').required().asString()
-
-export interface SignInTokens {
-  access_token: string
+export interface AuthenticationTokens {
   refresh_token: string
-  id_token: string
+  access_token: string
   token_type: string
   expires_in: number
+  id_token: string
 }
 
-export interface IdToken {
-  name?: string
-  email?: string
-  picture?: string
-  sub: string
-  iss: string
-  aud: string
-  exp: string
-  iat: string
-}
-
-export async function getTokens(code: string, redirectUri: string) {
-  interface RequestBody {
-    client_secret: string
-    redirect_uri: string
-    grant_type: string
-    client_id: string
-    code: string
-  }
-
-  const body: RequestBody = {
-    client_secret: AUTH0_CLIENT_SECRET,
-    redirect_uri: redirectUri,
-    grant_type: 'authorization_code',
-    client_id: AUTH0_CLIENT_ID,
-    code
-  }
-
-  const response = await got.post(`${AUTH0_DOMAIN_URL}/oauth/token`, {
-    body,
-    json: true
+export async function authenticateUserFromEmail(email: string, code: string) {
+  const url = `${config.auth0DomainUrl}/oauth/ro`
+  const res = await got.post(url, {
+    json: true,
+    body: {
+      connection: 'email',
+      grant_type: 'password',
+      client_id: config.auth0ClientId,
+      username: email,
+      password: code,
+      scope: 'openid offline_access'
+    }
   })
 
-  return response.body as SignInTokens
+  return res.body as AuthenticationTokens
+}
+
+export async function authenticateUserFromSms(phone: string, code: string) {
+  const url = `${config.auth0DomainUrl}/oauth/ro`
+  const res = await got.post(url, {
+    json: true,
+    body: {
+      connection: 'sms',
+      grant_type: 'password',
+      client_id: config.auth0ClientId,
+      username: phone,
+      password: code,
+      scope: 'openid offline_access'
+    }
+  })
+
+  return res.body as AuthenticationTokens
 }

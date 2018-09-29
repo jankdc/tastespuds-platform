@@ -1,7 +1,8 @@
 import { Pool, QueryResult } from 'pg'
-import * as env from 'env-var'
 import * as util from 'util'
 import * as fs from 'fs'
+
+import * as config from '../config'
 
 export interface DatabaseClient {
   queryViaFile(path: string, values?: any[]): Promise<QueryResult>
@@ -10,7 +11,7 @@ export interface DatabaseClient {
 }
 
 const pool = new Pool({
-  connectionString: env.get('DATABASE_URL').required().asString()
+  connectionString: config.databaseUrl
 })
 
 const readFileAsync = util.promisify(fs.readFile)

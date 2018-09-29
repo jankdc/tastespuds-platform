@@ -1,8 +1,8 @@
-import * as env from 'env-var'
-import * as got from 'got'
 import * as qs from 'querystring'
+import * as got from 'got'
+import * as config from '../config'
 
-const API_KEY = env.get('GOOGLE_PLACES_API_KEY').required().asString()
+const API_KEY = config.googlePlacesApiKey
 const BASE_URL = 'https://maps.googleapis.com/maps/api/place'
 
 export interface Place {
@@ -18,9 +18,9 @@ export interface Location {
   lng: number
 }
 
-export interface NearbyResponse {
-  status?: number
-  results?: Place[]
+export interface SearchNearbyResponse {
+  status: number
+  results: Place[]
 }
 
 export async function searchNearby(location: Location) {
@@ -41,7 +41,7 @@ export async function searchNearby(location: Location) {
   // Let's just ignore the place API errors as we don't really need to know why it failed
   // TODO: Log the error server-side for monitoring purposes
   return responses
-    .map((r) => r.body as NearbyResponse)
-    .map((r) => r.results as Place[])
+    .map((r) => r.body as SearchNearbyResponse)
+    .map((r) => r.results)
     .reduce((acc, arr) => acc.concat(arr))
 }

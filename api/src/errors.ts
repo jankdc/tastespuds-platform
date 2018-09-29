@@ -1,7 +1,7 @@
 import * as Koa from 'koa'
 
 export default function createErrorMiddleware(): Koa.Middleware {
-  return async (ctx: Koa.Context, next: () => void) => {
+  return async (ctx, next) => {
     try {
       await next()
     } catch (err) {

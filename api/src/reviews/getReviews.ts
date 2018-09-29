@@ -1,22 +1,24 @@
 import * as Koa from 'koa'
-import * as gplaces from '../../clients/google-places'
-import * as users from '../../clients/auth0-users'
-import * as math from '../../math'
-import database from '../../clients/database'
 
-export default async function getReviews(ctx: Koa.Context) {
-  interface ReviewQueries {
-    location?: string
-  }
+import * as auth0Users from '../clients/auth0-users'
+import * as gplaces from '../clients/google-places'
+import * as math from '../math'
+import database from '../clients/database'
+import { createValidator } from '../input'
 
-  const queries: ReviewQueries = ctx.query
+const inputSchema = {
+  type: 'object',
+  properties: {
+    location: {
+      type: 'string'
+    }
+  },
+  required: ['location']
+}
 
-  if (typeof queries.location !== 'string') {
-    return ctx.throw('`location` parameter is missing in query', 422)
-  }
-
-  const parsedQs = queries.location.split(':')
-  const results = await database.queryViaFile(__dirname + '/query.sql')
+async function getReviews(ctx: Koa.Context) {
+  const parsedQs = ctx.query.location.split(':')
+  const results = await database.queryViaFile(__dirname + '/getReviews.sql')
   if (results.rowCount === 0) {
     ctx.status = 200
     ctx.body = { reviews: [] }
@@ -50,7 +52,7 @@ export default async function getReviews(ctx: Koa.Context) {
 
   hotReviews.sort((reviewA, reviewB) => hotScoreFn(reviewB) - hotScoreFn(reviewA))
 
-  const allUsers = await users.getUsersViaIds(hotReviews.map((r) => r.user_id))
+  const allUsers = await auth0Users.getUsersViaIds(hotReviews.map((r) => r.user_id))
   const mapsById = (name: string) => (acc: any, item: any) => {
     const copy = Object.assign({}, item)
     acc[copy[name]] = copy
@@ -64,3 +66,8 @@ export default async function getReviews(ctx: Koa.Context) {
     users: allUsers.reduce(mapsById('user_id'), {})
   }
 }
+
+export default [
+  createValidator(inputSchema),
+  getReviews
+]

@@ -16,6 +16,7 @@
     "node": "=>7.6"
   },
   "dependencies": {
+    "ajv": "^6.5.4",
     "env-var": "^3.3.0",
     "got": "^9.2.1",
     "jwt-decode": "^2.2.0",

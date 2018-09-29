@@ -1,10 +1,10 @@
 import * as Router from 'koa-router'
-import createUser from './createUser'
+import getUsers from './getUsers'
 
 const router = new Router({
   prefix: '/users'
 })
 
-router.post('/', createUser)
+router.get('/', ...getUsers)
 
 export const routes = () => router.routes()
