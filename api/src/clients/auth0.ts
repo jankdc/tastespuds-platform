@@ -16,6 +16,7 @@ export async function authenticateUserFromOauth(code: string) {
     body: {
       grant_type: 'authorization_code',
       client_id: config.auth0ClientId,
+      redirect_uri: config.auth0RedirectUrl,
       client_secret: config.auth0ClientSecret,
       code
     }

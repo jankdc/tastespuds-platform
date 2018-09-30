@@ -20,6 +20,10 @@ export const auth0DomainUrl = env.get('AUTH0_DOMAIN_URL')
   .required()
   .asUrlString()
 
+export const auth0RedirectUrl = env.get('AUTH0_REDIRECT_URL')
+  .required()
+  .asUrlString()
+
 export const auth0ClientSecret = env.get('AUTH0_CLIENT_SECRET')
   .required()
   .asString()
