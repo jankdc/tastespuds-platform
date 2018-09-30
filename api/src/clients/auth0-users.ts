@@ -44,6 +44,18 @@ export async function getAccess() {
   return cachedAccess as ApiAccess
 }
 
+export async function updateUser(id: string, body: any) {
+  const { access_token } = await getAccess()
+
+  await got.patch(`${config.auth0DomainUrl}/api/v2/users/${id}`, {
+    json: true,
+    body,
+    headers: {
+     authorization: `Bearer ${access_token}`
+    }
+  })
+}
+
 export async function getUsers(q: string) {
   const { access_token } = await getAccess()
 

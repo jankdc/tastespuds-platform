@@ -7,16 +7,30 @@ const inputSchema = {
   properties: {
     email: {
       type: 'string'
+    },
+    username: {
+      type: 'string'
     }
   },
-  required: ['email']
+  anyOf: [
+    { required: ['email'] },
+    { required: ['username'] }
+  ]
 }
 
 async function getUsers(ctx: Koa.Context) {
-  const { email } = ctx.query
+  const builder: string[] = []
+
+  if (ctx.query.email) {
+    builder.push(`email:${ctx.query.email}`)
+  }
+
+  if (ctx.query.username) {
+    builder.push(`nickname:${ctx.query.username}`)
+  }
 
   ctx.body = {
-    users: await auth0Users.getUsers(`email:${email}`)
+    users: await auth0Users.getUsers(builder.join(' AND '))
   }
 }
 

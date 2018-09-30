@@ -9,34 +9,15 @@ export interface AuthenticationTokens {
   id_token: string
 }
 
-export async function authenticateUserFromEmail(email: string, code: string) {
-  const url = `${config.auth0DomainUrl}/oauth/ro`
+export async function authenticateUserFromOauth(code: string) {
+  const url = `${config.auth0DomainUrl}/oauth/token`
   const res = await got.post(url, {
     json: true,
     body: {
-      connection: 'email',
-      grant_type: 'password',
+      grant_type: 'authorization_code',
       client_id: config.auth0ClientId,
-      username: email,
-      password: code,
-      scope: 'openid offline_access'
-    }
-  })
-
-  return res.body as AuthenticationTokens
-}
-
-export async function authenticateUserFromSms(phone: string, code: string) {
-  const url = `${config.auth0DomainUrl}/oauth/ro`
-  const res = await got.post(url, {
-    json: true,
-    body: {
-      connection: 'sms',
-      grant_type: 'password',
-      client_id: config.auth0ClientId,
-      username: phone,
-      password: code,
-      scope: 'openid offline_access'
+      client_secret: config.auth0ClientSecret,
+      code
     }
   })
 

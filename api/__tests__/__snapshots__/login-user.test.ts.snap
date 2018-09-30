@@ -2,20 +2,10 @@
 
 exports[`login a new user 1`] = `
 Object {
-  "tokens": Object {
-    "accessToken": "some-access-token",
-    "expiresIn": 1234567,
-    "idToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
-    "refreshToken": "some-refresh-token",
-  },
-  "user": Object {
-    "email": "tastespuds@gmail.com",
-    "email_verified": true,
-    "name": "Jan Awesome Cruz",
-    "picture": "some-picture",
-    "updated_at": "some-date",
-    "user_id": "some-user-id",
-  },
+  "accessToken": "some-access-token",
+  "expiresIn": 1234567,
+  "idToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+  "refreshToken": "some-refresh-token",
 }
 `;
 
@@ -26,28 +16,11 @@ Object {
 }
 `;
 
-exports[`respond with a 422 if \`email\` is missing 1`] = `
-Object {
-  "description": "data should have required property 'email'",
-  "error": "INVALID_INPUT",
-}
-`;
-
 exports[`respond with the same user if logged in twice 1`] = `
 Object {
-  "tokens": Object {
-    "accessToken": "some-access-token",
-    "expiresIn": 1234567,
-    "idToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
-    "refreshToken": "some-refresh-token",
-  },
-  "user": Object {
-    "email": "tastespuds@gmail.com",
-    "email_verified": true,
-    "name": "Jan Awesome Cruz",
-    "picture": "some-picture",
-    "updated_at": "some-date",
-    "user_id": "some-user-id",
-  },
+  "accessToken": "some-access-token",
+  "expiresIn": 1234567,
+  "idToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+  "refreshToken": "some-refresh-token",
 }
 `;

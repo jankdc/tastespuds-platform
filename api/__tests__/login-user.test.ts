@@ -20,14 +20,8 @@ beforeAll(async () => {
   // mock auth0 call
   const auth0 = require('../src/clients/auth0')
   const tokensFixture = await readFixture('../__fixtures__/tokens.json')
-  const auth9UserMock = jest.spyOn(auth0, 'authenticateUserFromEmail')
+  const auth9UserMock = jest.spyOn(auth0, 'authenticateUserFromOauth')
   auth9UserMock.mockImplementation(async () => JSON.parse(tokensFixture))
-
-  // mock auth0-users call
-  const auth0Users = require('../src/clients/auth0-users')
-  const usersFixture = await readFixture('../__fixtures__/users.json')
-  const getUsersMock = jest.spyOn(auth0Users, 'getUsers')
-  getUsersMock.mockImplementation(async () => JSON.parse(usersFixture))
 })
 
 test('login a new user', async () => {
@@ -58,19 +52,6 @@ test('respond with the same user if logged in twice', async () => {
     .set('Accept', 'application/json')
     .send({code: 'some-code', email: 'tastespuds@gmail.com'})
     .expect(200)
-    .expect('Content-Type', /json/)
-
-  expect(response.body).toMatchSnapshot()
-})
-
-test('respond with a 422 if `email` is missing', async () => {
-  const server = require('../src/server').default
-
-  const response = await request(server)
-    .post('/oauth/login')
-    .set('Accept', 'application/json')
-    .send({code: 'some-code'})
-    .expect(422)
     .expect('Content-Type', /json/)
 
   expect(response.body).toMatchSnapshot()
