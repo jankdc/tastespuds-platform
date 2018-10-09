@@ -19,7 +19,7 @@ export interface Location {
 }
 
 export interface SearchNearbyResponse {
-  status: number
+  status: string
   results: Place[]
 }
 
