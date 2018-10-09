@@ -11,6 +11,7 @@ export interface Place {
   geometry: {
     location: Location
   }
+  formatted_address: string
 }
 
 export interface Location {
