@@ -45,3 +45,31 @@ export async function searchNearby(location: Location) {
     .map((r) => r.results)
     .reduce((acc, arr) => acc.concat(arr))
 }
+
+export interface SearcyByKeywordOptions {
+  locationbias?: string
+}
+
+export interface SearchByKeywordResponse {
+  status: string
+  candidates: Place[]
+}
+
+export async function searchByKeyword(keyword: string, options?: SearcyByKeywordOptions) {
+  const queries: any = {
+    key: API_KEY,
+    input: keyword,
+    fields: ['name', 'place_id', 'geometry/location', 'types'],
+    inputtype: 'textquery'
+  }
+
+  if (options) {
+    Object.assign(queries, options)
+  }
+
+  const searchUrl = BASE_URL + '/findplacefromtext/json?' + qs.stringify(queries)
+
+  const response = await got(searchUrl, { json: true })
+
+  return response.body as SearchByKeywordResponse
+}
