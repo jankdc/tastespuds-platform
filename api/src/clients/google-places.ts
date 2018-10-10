@@ -11,7 +11,6 @@ export interface Place {
   geometry: {
     location: Location
   }
-  formatted_address: string
 }
 
 export interface Location {
@@ -48,27 +47,26 @@ export async function searchNearby(location: Location) {
 }
 
 export interface SearcyByKeywordOptions {
-  locationbias?: string
+  radius?: number
+  location?: string
 }
 
 export interface SearchByKeywordResponse {
   status: string
-  candidates: Place[]
+  results: Place[]
 }
 
 export async function searchByKeyword(keyword: string, options?: SearcyByKeywordOptions) {
   const queries: any = {
     key: API_KEY,
-    input: keyword,
-    fields: ['name', 'place_id', 'geometry/location', 'types'],
-    inputtype: 'textquery'
+    query: keyword
   }
 
   if (options) {
     Object.assign(queries, options)
   }
 
-  const searchUrl = BASE_URL + '/findplacefromtext/json?' + qs.stringify(queries)
+  const searchUrl = BASE_URL + '/textsearch/json?' + qs.stringify(queries)
 
   const response = await got(searchUrl, { json: true })
 

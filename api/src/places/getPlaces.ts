@@ -1,5 +1,5 @@
 import * as Koa from 'koa'
-import * as googlePlaces from '../clients/google-places'
+import * as gplaces from '../clients/google-places'
 import { createValidator } from '../input'
 
 const inputSchema = {
@@ -7,19 +7,23 @@ const inputSchema = {
   properties: {
     name: {
       type: 'string'
+    },
+    location: {
+      type: 'string'
     }
   },
-  required: ['name'],
+  required: ['name', 'location'],
   additionalProperties: false
 }
 
 async function getPlaces(ctx: Koa.Context) {
-  if (ctx.query.name) {
-    const result = await googlePlaces.searchByKeyword(ctx.query.name)
+  const { results } = await gplaces.searchByKeyword(ctx.query.name, {
+    radius: 1000,
+    location: ctx.query.location
+  })
 
-    ctx.body = {
-      places: result.candidates
-    }
+  ctx.body = {
+    places: results
   }
 }
 
