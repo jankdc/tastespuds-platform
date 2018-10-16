@@ -1,5 +1,5 @@
 INSERT INTO
-  tastespuds.places (gplace_id)
+  tastespuds.place (gplace_id)
 SELECT
   *
 FROM
