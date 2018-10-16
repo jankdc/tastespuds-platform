@@ -15,7 +15,7 @@ CREATE TABLE tastespuds.user (
 
 CREATE TABLE tastespuds.place (
   id SERIAL PRIMARY KEY NOT NULL,
-  gplace_id TEXT NOT NULL,
+  gplace_id TEXT NOT NULL UNIQUE,
 
   CONSTRAINT no_empty_gplace_id
     CHECK (gplace_id != '')
