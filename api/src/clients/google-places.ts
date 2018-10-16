@@ -42,7 +42,7 @@ export async function searchNearby(location: Location) {
   return responses
     .map((r) => r.body as SearchNearbyResponse)
     .map((r) => r.results)
-    .reduce((acc, arr) => acc.concat(arr))
+    .reduce((acc, arr) => acc.concat(arr), [])
 }
 
 export interface SearcyByKeywordOptions {
