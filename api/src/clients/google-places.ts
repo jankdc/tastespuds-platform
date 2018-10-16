@@ -25,7 +25,7 @@ export interface SearchNearbyResponse {
 
 export async function searchNearby(location: Location) {
   const createUrl = (type: string) => BASE_URL + '/nearbysearch/json?' + qs.stringify({
-    location: [location.lat, location.lng],
+    location: `${location.lat},${location.lng}`,
     rankby: 'distance',
     type,
     key: API_KEY

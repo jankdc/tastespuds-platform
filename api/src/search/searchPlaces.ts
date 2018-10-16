@@ -47,9 +47,8 @@ async function searchPlaces(ctx: Koa.Context) {
       name: googlePlace.name,
       types: googlePlace.types,
       photos: googlePlace.photos,
-      address: googlePlace.formatted_address,
-      gplaceId: place.gplace_id,
-      openingHours: googlePlace.opening_hours
+      address: googlePlace.vicinity,
+      gplaceId: place.gplace_id
     }
   })
 
