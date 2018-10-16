@@ -33,9 +33,8 @@ export async function searchNearby(location: Location) {
 
   const responses = await Promise.all([
     got(createUrl('restaurant'), { json: true }),
-    // TODO: Only uncomment this when we're on production because this shit is expensive
-    // got.get(createUrl('cafe')),
-    // got.get(createUrl('bar')),
+    got(createUrl('cafe'), { json: true }),
+    got(createUrl('bar'), { json: true })
   ])
 
   // Let's just ignore the place API errors as we don't really need to know why it failed
