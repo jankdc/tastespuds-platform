@@ -33,6 +33,7 @@ export async function searchNearby(location: Location) {
 
   const responses = await Promise.all([
     got(createUrl('restaurant'), { json: true }),
+    got(createUrl('bakery'), { json: true }),
     got(createUrl('cafe'), { json: true }),
     got(createUrl('bar'), { json: true })
   ])
