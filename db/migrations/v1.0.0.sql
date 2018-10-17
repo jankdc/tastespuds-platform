@@ -61,9 +61,6 @@ CREATE TABLE tastespuds.review (
   content TEXT NOT NULL,
   creation_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
 
-  CONSTRAINT no_empty_assets
-    CHECK (array_length(assets, 1) != 0),
-
   CONSTRAINT no_empty_content
     CHECK (content != ''),
 
