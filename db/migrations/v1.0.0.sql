@@ -55,7 +55,7 @@ CREATE TABLE tastespuds.asset (
 
 CREATE TABLE tastespuds.review (
   id SERIAL PRIMARY KEY NOT NULL,
-  rating NUMERIC(2,1) NOT NULL,
+  rating INTEGER NOT NULL,
   item_id INTEGER NOT NULL,
   user_id TEXT NOT NULL,
   content TEXT NOT NULL,
@@ -68,7 +68,7 @@ CREATE TABLE tastespuds.review (
     CHECK (content != ''),
 
   CONSTRAINT rating_must_be_in_range
-    CHECK (rating >= 0 AND rating <= 10),
+    CHECK (rating > 0 AND rating <= 5),
 
   FOREIGN KEY (user_id)
     REFERENCES tastespuds.user (id),
