@@ -78,7 +78,7 @@ CREATE TABLE tastespuds.review (
 
 CREATE TABLE tastespuds.review_asset (
   asset_id TEXT NOT NULL,
-  review_id TEXT NOT NULL,
+  review_id INTEGER NOT NULL,
   PRIMARY KEY(asset_id, review_id),
 
   FOREIGN KEY (asset_id)
