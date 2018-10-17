@@ -36,11 +36,25 @@ CREATE TABLE tastespuds.item (
     REFERENCES tastespuds.place (id)
 );
 
+-- asset
+
+CREATE TABLE tastespuds.asset (
+  id TEXT PRIMARY KEY NOT NULL,
+  type TEXT NOT NULL,
+  data BYTEA NOT NULL,
+  creation_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+
+  CONSTRAINT id_must_be_uuidv4
+    CHECK (char_length(id) = 36),
+
+  CONSTRAINT no_empty_type
+    CHECK (type != '')
+);
+
 -- review
 
 CREATE TABLE tastespuds.review (
   id SERIAL PRIMARY KEY NOT NULL,
-  assets TEXT[] NOT NULL,
   rating NUMERIC(2,1) NOT NULL,
   item_id INTEGER NOT NULL,
   user_id TEXT NOT NULL,
@@ -61,6 +75,22 @@ CREATE TABLE tastespuds.review (
 
   FOREIGN KEY (item_id)
     REFERENCES tastespuds.item (id)
+);
+
+-- review_asset
+
+CREATE TABLE tastespuds.review_asset (
+  asset_id TEXT NOT NULL,
+  review_id TEXT NOT NULL,
+  PRIMARY KEY(asset_id, review_id),
+
+  FOREIGN KEY (asset_id)
+    REFERENCES tastespuds.asset (id)
+    ON DELETE RESTRICT,
+
+  FOREIGN KEY (review_id)
+    REFERENCES tastespuds.review (id)
+    ON DELETE CASCADE
 );
 
 -- comment
