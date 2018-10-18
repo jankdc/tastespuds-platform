@@ -42,13 +42,18 @@ CREATE TABLE tastespuds.asset (
   id TEXT PRIMARY KEY NOT NULL,
   type TEXT NOT NULL,
   data BYTEA NOT NULL,
+  options JSONB NOT NULL,
+  original_name TEXT NOT NULL,
   creation_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
 
   CONSTRAINT id_must_be_uuidv4
     CHECK (char_length(id) = 36),
 
   CONSTRAINT no_empty_type
-    CHECK (type != '')
+    CHECK (type != ''),
+
+  CONSTRAINT no_empty_original_name
+    CHECK (original_name != '')
 );
 
 -- review
