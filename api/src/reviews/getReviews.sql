@@ -1,11 +1,11 @@
 SELECT
   r.id,
-  r.assets,
   r.user_id,
   r.rating,
   r.content,
   r.creation_date,
 
+  json_agg(ra.*) AS assets,
   json_agg(i.*)->0 AS item,
   json_agg(p.*)->0 AS place,
 
@@ -18,6 +18,8 @@ SELECT
     AS likes_weighted_score
 FROM
   tastespuds.review r
+INNER JOIN
+  tastespuds.review_asset ra ON r.id = ra.review_id
 INNER JOIN
   tastespuds.item i ON r.item_id = i.id
 INNER JOIN

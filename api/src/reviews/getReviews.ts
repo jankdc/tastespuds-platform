@@ -19,6 +19,7 @@ const inputSchema = {
 async function getReviews(ctx: Koa.Context) {
   const parsedQs = ctx.query.location.split(',')
   const results = await database.queryViaFile(__dirname + '/getReviews.sql')
+
   if (results.rowCount === 0) {
     ctx.status = 200
     ctx.body = { reviews: [] }
@@ -36,6 +37,7 @@ async function getReviews(ctx: Koa.Context) {
 
   // Hot means the past 7 days and it is relatively near the user location
   const hotReviews = results.rows.filter((r) => gplaceIds.includes(r.place.gplace_id))
+
   const hotScoreFn = (review: any): number => {
     const place = findPlace(review.place.gplace_id) as gplaces.Place
 
@@ -60,10 +62,34 @@ async function getReviews(ctx: Koa.Context) {
     return acc
   }
 
+  const a0usersRef = allUsers.reduce(mapsById('user_id'), {})
+  const gplacesRef = allPlaces.reduce(mapsById('place_id'), {})
+
+  // Replace references in review object
+  hotReviews.forEach((review) => {
+    const a0user = a0usersRef[review.user_id]
+    const gplace = gplacesRef[review.place.gplace_id]
+
+    review.place = {
+      id: review.place.id,
+      name: gplace.name,
+      types: gplace.types,
+      photos: gplace.photos,
+      address: gplace.vicinity,
+      gplaceId: review.place.gplace_id
+    }
+
+    review.user = {
+      id: a0user.user_id,
+      picture: a0user.picture,
+      username: a0user.user_metadata.username
+    }
+
+    delete review.user_id
+  })
+
   ctx.body = {
-    reviews: hotReviews,
-    places: allPlaces.reduce(mapsById('place_id'), {}),
-    users: allUsers.reduce(mapsById('user_id'), {})
+    reviews: hotReviews
   }
 }
 
