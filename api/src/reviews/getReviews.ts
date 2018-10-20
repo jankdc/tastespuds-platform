@@ -17,7 +17,7 @@ const inputSchema = {
 }
 
 async function getReviews(ctx: Koa.Context) {
-  const parsedQs = ctx.query.location.split(':')
+  const parsedQs = ctx.query.location.split(',')
   const results = await database.queryViaFile(__dirname + '/getReviews.sql')
   if (results.rowCount === 0) {
     ctx.status = 200
