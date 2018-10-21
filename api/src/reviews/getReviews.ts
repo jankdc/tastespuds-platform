@@ -66,7 +66,7 @@ async function getReviews(ctx: Koa.Context) {
   const gplacesRef = allPlaces.reduce(mapsById('place_id'), {})
 
   // Replace references in review object
-  hotReviews.forEach((review) => {
+  await Promise.all(hotReviews.map(async (review) => {
     const a0user = a0usersRef[review.user_id]
     const gplace = gplacesRef[review.place.gplace_id]
 
@@ -85,8 +85,21 @@ async function getReviews(ctx: Koa.Context) {
       username: a0user.user_metadata.username
     }
 
+    const reviewAssetsResults = await database.queryViaFile(
+      __dirname + '/getReviewAssets.sql',
+      [review.id]
+    )
+
+    review.assets = reviewAssetsResults.rows.map((ra) => {
+      return {
+        id: ra.id,
+        type: ra.type,
+        options: ra.options
+      }
+    })
+
     delete review.user_id
-  })
+  }))
 
   ctx.body = {
     reviews: hotReviews
