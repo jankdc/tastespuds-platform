@@ -11,11 +11,18 @@ SELECT
 
   COUNT(l.*) AS num_of_likes,
 
-  exp(-4 * (date_part('day', now() - r.creation_date) / 7) ^ 2)
+  CASE WHEN r.creation_date > now() - INTERVAL '1 days'
+    THEN exp(-0.3 * (date_part('hour', now() - r.creation_date) / 24) ^ 2)
+    ELSE exp(-0.03 - (date_part('day', now() - r.creation_date) / 7) * 2)
+  END
     AS date_weighted_score,
 
-  SUM(COALESCE(exp(-4 * (date_part('day', now() - l.creation_date) / 7) ^ 2), 0))
-    AS likes_weighted_score
+  AVG(
+    COALESCE(
+      exp(-4 * (date_part('day', now() - l.creation_date) / 7) ^ 2),
+      0
+    )
+  ) AS likes_weighted_score
 FROM
   tastespuds.review r
 INNER JOIN
