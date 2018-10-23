@@ -8,6 +8,14 @@ export const nodeEnv = env.get('NODE_ENV')
   .required()
   .asEnum(['development', 'production'])
 
+export const jwksAud = env.get('JWKS_AUD')
+  .required()
+  .asString()
+
+export const jwksHost = env.get('JWKS_HOST')
+  .required()
+  .asUrlString()
+
 export const databaseUrl = env.get('DATABASE_URL')
   .required()
   .asString()
