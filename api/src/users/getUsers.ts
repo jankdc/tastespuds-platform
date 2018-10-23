@@ -1,4 +1,6 @@
 import * as Koa from 'koa'
+
+import checkJwt from '../check-jwt'
 import * as auth0Users from '../clients/auth0-users'
 import { createValidator } from '../input'
 
@@ -33,6 +35,7 @@ async function getUsers(ctx: Koa.Context) {
 }
 
 export default [
+  checkJwt,
   createValidator(inputSchema),
   getUsers
 ]

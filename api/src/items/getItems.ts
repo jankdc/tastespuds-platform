@@ -1,4 +1,5 @@
 import * as Koa from 'koa'
+import checkJwt from '../check-jwt'
 import database from '../clients/database'
 import { createValidator } from '../input'
 
@@ -23,6 +24,7 @@ async function getItems(ctx: Koa.Context) {
 }
 
 export default [
+  checkJwt,
   createValidator(inputSchema),
   getItems
 ]

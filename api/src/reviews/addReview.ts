@@ -1,6 +1,7 @@
 import * as Koa from 'koa'
 
 import database from '../clients/database'
+import checkJwt from '../check-jwt'
 import { createValidator } from '../input'
 
 const inputSchema = {
@@ -82,6 +83,7 @@ async function addReview(ctx: Koa.Context) {
 }
 
 export default [
+  checkJwt,
   createValidator(inputSchema),
   addReview
 ]

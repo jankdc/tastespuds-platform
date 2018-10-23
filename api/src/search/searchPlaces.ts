@@ -1,7 +1,8 @@
 import * as Koa from 'koa'
 
-import * as gplaces from '../clients/google-places'
 import database from '../clients/database'
+import checkJwt from '../check-jwt'
+import * as gplaces from '../clients/google-places'
 import { createValidator } from '../input'
 
 const inputSchema = {
@@ -22,7 +23,7 @@ async function searchPlaces(ctx: Koa.Context) {
   }
 
   const googlePlaces = await gplaces.searchNearby(userLocation)
-  const googlePlaceIds = googlePlaces.map(gp => gp.place_id)
+  const googlePlaceIds = googlePlaces.map((gp) => gp.place_id)
   const googlePlaceRef = googlePlaces.reduce((obj, place) => {
     obj[place.place_id] = place
     delete obj.place_id
@@ -39,7 +40,7 @@ async function searchPlaces(ctx: Koa.Context) {
   ])
 
   // Interpolate google place data as part of the response
-  const places = results.rows.map(place => {
+  const places = results.rows.map((place) => {
     const googlePlace = googlePlaceRef[place.gplace_id]
 
     return {
@@ -56,6 +57,7 @@ async function searchPlaces(ctx: Koa.Context) {
 }
 
 export default [
+  checkJwt,
   createValidator(inputSchema),
   searchPlaces
 ]

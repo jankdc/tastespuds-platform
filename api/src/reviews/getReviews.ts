@@ -4,6 +4,7 @@ import * as auth0Users from '../clients/auth0-users'
 import * as gplaces from '../clients/google-places'
 import * as math from '../math'
 import database from '../clients/database'
+import checkJwt from '../check-jwt'
 import { createValidator } from '../input'
 
 const inputSchema = {
@@ -50,7 +51,7 @@ async function getReviews(ctx: Koa.Context) {
   const hotReviews = results.rows.filter((r) => gplaceIds.includes(r.place.gplace_id))
   const gplacesRef = allPlaces.reduce(mapsById('place_id'), {})
   const furthestKm = furthestDistanceInKm(
-    hotReviews.map(h => gplacesRef[h.place.gplace_id]),
+    hotReviews.map((h) => gplacesRef[h.place.gplace_id]),
     userLocation
   )
   const hotScoreFn = (review: any): number => {
@@ -64,9 +65,9 @@ async function getReviews(ctx: Koa.Context) {
       location.lng
     )
 
-    const distance_weighted_score = 1 - (distance / furthestKm)
+    const distanceWeightedScore = 1 - (distance / furthestKm)
 
-    return distance_weighted_score
+    return distanceWeightedScore
       + (2 * review.date_weighted_score)
       + (3 * review.likes_weighted_score)
   }
@@ -116,7 +117,7 @@ async function getReviews(ctx: Koa.Context) {
 }
 
 function furthestDistanceInKm(places: gplaces.Place[], location: UserLocation): number {
-  const distances = places.map(place => {
+  const distances = places.map((place) => {
     return math.diffInKm(
       location.lat,
       location.lng,
@@ -129,6 +130,7 @@ function furthestDistanceInKm(places: gplaces.Place[], location: UserLocation): 
 }
 
 export default [
+  checkJwt,
   createValidator(inputSchema),
   getReviews
 ]

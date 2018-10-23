@@ -8,15 +8,8 @@ import * as items from './items'
 import * as users from './users'
 import * as oauth from './oauth'
 
-import { createCheckJwtMiddleware } from './check-jwt'
-
 const router = new Router()
-
-// Public Endpoints
 router.use(oauth.routes())
-
-// Private Endpoints
-router.use(createCheckJwtMiddleware());
 router.use(items.routes())
 router.use(oauth.routes())
 router.use(users.routes())

@@ -1,6 +1,7 @@
 import * as Koa from 'koa'
 import * as uuidv4 from 'uuid/v4'
 
+import checkJwt from '../check-jwt'
 import database from '../clients/database'
 import { createValidator } from '../input'
 
@@ -47,6 +48,7 @@ async function addAsset(ctx: Koa.Context) {
 }
 
 export default [
+  checkJwt,
   createValidator(inputSchema),
   addAsset
 ]

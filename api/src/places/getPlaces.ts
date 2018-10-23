@@ -1,4 +1,6 @@
 import * as Koa from 'koa'
+
+import checkJwt from '../check-jwt'
 import * as gplaces from '../clients/google-places'
 import { createValidator } from '../input'
 
@@ -26,6 +28,7 @@ async function getPlaces(ctx: Koa.Context) {
 }
 
 export default [
+  checkJwt,
   createValidator(inputSchema),
   getPlaces
 ]

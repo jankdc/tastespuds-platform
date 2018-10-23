@@ -21,3 +21,5 @@ export function createCheckJwtMiddleware(): Koa.Middleware {
     algorithms: [ 'RS256' ]
   })
 }
+
+export default createCheckJwtMiddleware()
