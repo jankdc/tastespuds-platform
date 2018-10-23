@@ -7,7 +7,7 @@ const inputSchema = {
   type: 'object',
   properties: {
     placeId: {
-      type: 'integer'
+      type: 'string'
     }
   },
   required: ['placeId'],
@@ -16,7 +16,7 @@ const inputSchema = {
 
 async function getItems(ctx: Koa.Context) {
   const results = await database.queryViaFile(__dirname + '/getItems.sql', [
-    ctx.query.placeId
+    parseInt(ctx.query.placeId, 10)
   ])
 
   ctx.status = 200
