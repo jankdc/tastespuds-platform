@@ -52,9 +52,7 @@ async function searchPlaces(ctx: Koa.Context) {
     }
   })
 
-  ctx.body = {
-    places
-  }
+  ctx.body = places
 }
 
 export default [

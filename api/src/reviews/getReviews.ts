@@ -112,9 +112,7 @@ async function getReviews(ctx: Koa.Context) {
     delete review.user_id
   }))
 
-  ctx.body = {
-    reviews: hotReviews
-  }
+  ctx.body = hotReviews
 }
 
 function furthestDistanceInKm(places: gplaces.Place[], location: UserLocation): number {

@@ -29,9 +29,7 @@ async function getUsers(ctx: Koa.Context) {
     builder.push(`nickname:${ctx.query.username}`)
   }
 
-  ctx.body = {
-    users: await auth0Users.getUsers(builder.join(' AND '))
-  }
+  ctx.body = await auth0Users.getUsers(builder.join(' AND '))
 }
 
 export default [

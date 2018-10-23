@@ -5,23 +5,21 @@ import { createValidator } from '../input'
 const inputSchema = {
   type: 'object',
   properties: {
-    gplaceId: {
-      type: 'string'
+    placeId: {
+      type: 'integer'
     }
   },
-  required: ['gplaceId'],
+  required: ['placeId'],
   additionalProperties: false
 }
 
 async function getItems(ctx: Koa.Context) {
   const results = await database.queryViaFile(__dirname + '/getItems.sql', [
-    ctx.query.gplaceId
+    ctx.query.placeId
   ])
 
   ctx.status = 200
-  ctx.body = {
-    items: results.rows
-  }
+  ctx.body = results.rows
 }
 
 export default [

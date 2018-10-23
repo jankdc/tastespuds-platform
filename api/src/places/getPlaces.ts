@@ -22,9 +22,7 @@ async function getPlaces(ctx: Koa.Context) {
     location: ctx.query.location
   })
 
-  ctx.body = {
-    places: results
-  }
+  ctx.body = results
 }
 
 export default [
