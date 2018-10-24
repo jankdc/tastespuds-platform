@@ -2,10 +2,11 @@
 
 exports[`login a new user 1`] = `
 Object {
-  "accessToken": "some-access-token",
-  "expiresIn": 1234567,
-  "idToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
-  "refreshToken": "some-refresh-token",
+  "access_token": "some-access-token",
+  "expires_in": 1234567,
+  "id_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+  "refresh_token": "some-refresh-token",
+  "token_type": "some-token-type",
 }
 `;
 
@@ -18,9 +19,10 @@ Object {
 
 exports[`respond with the same user if logged in twice 1`] = `
 Object {
-  "accessToken": "some-access-token",
-  "expiresIn": 1234567,
-  "idToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
-  "refreshToken": "some-refresh-token",
+  "access_token": "some-access-token",
+  "expires_in": 1234567,
+  "id_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+  "refresh_token": "some-refresh-token",
+  "token_type": "some-token-type",
 }
 `;

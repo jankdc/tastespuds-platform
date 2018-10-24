@@ -36,14 +36,7 @@ async function addAsset(ctx: Koa.Context) {
 
   const asset = results.rows[0]
 
-  ctx.body = {
-    id: asset.id,
-    type: asset.type,
-    options: asset.options,
-    originalName: asset.original_name,
-    creationDate: asset.creation_date
-  }
-
+  ctx.body = asset
   ctx.status = 200
 }
 

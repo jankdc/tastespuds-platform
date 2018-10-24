@@ -88,7 +88,7 @@ async function getReviews(ctx: Koa.Context) {
       types: gplace.types,
       photos: gplace.photos,
       address: gplace.vicinity,
-      gplaceId: review.place.gplace_id
+      gplace_id: review.place.gplace_id
     }
 
     review.user = {
@@ -102,13 +102,7 @@ async function getReviews(ctx: Koa.Context) {
       [review.id]
     )
 
-    review.assets = reviewAssetsResults.rows.map((ra) => {
-      return {
-        id: ra.id,
-        type: ra.type,
-        options: ra.options
-      }
-    })
+    review.assets = reviewAssetsResults.rows
 
     delete review.user_id
   }))

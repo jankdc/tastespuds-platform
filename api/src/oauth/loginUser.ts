@@ -22,12 +22,7 @@ async function loginUser(ctx: Koa.Context) {
 
   await database.queryViaFile(__dirname + '/loginUser.sql', [idToken.sub])
 
-  ctx.body = {
-    idToken: results.id_token,
-    expiresIn: results.expires_in,
-    accessToken: results.access_token,
-    refreshToken: results.refresh_token
-  }
+  ctx.body = results
 }
 
 export default [

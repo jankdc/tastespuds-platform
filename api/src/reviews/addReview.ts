@@ -21,7 +21,7 @@ const inputSchema = {
     content: {
       type: 'string'
     },
-    userId: {
+    user_id: {
       type: 'string'
     },
     item: {
@@ -33,18 +33,18 @@ const inputSchema = {
             name: {
               type: 'string'
             },
-            placeId: {
+            place_id: {
               type: 'integer'
             }
           },
           additionalProperties: false,
-          required: ['name', 'placeId']
+          required: ['name', 'place_id']
         }
       ]
     }
   },
   additionalProperties: false,
-  required: ['userId', 'assets', 'rating', 'content', 'item']
+  required: ['user_id', 'assets', 'rating', 'content', 'item']
 }
 
 async function addReview(ctx: Koa.Context) {
@@ -55,17 +55,17 @@ async function addReview(ctx: Koa.Context) {
 
   await database.createTransaction(async (client) => {
     if (typeof body.item === 'object') {
-      const { placeId, name } = body.item as any
+      const { place_id, name } = body.item as any
       const addItemResults = await database.queryClientViaFile(client, cwp('addItem.sql'), [
         name,
-        placeId
+        place_id
       ])
 
       body.item = addItemResults.rows[0].id
     }
 
     const addReviewResults = await database.queryClientViaFile(client, cwp('addReview.sql'), [
-      body.userId,
+      body.user_id,
       body.content,
       body.rating,
       body.item

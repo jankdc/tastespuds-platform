@@ -6,17 +6,17 @@ import { createValidator } from '../input'
 const inputSchema = {
   type: 'object',
   properties: {
-    placeId: {
+    place_id: {
       type: 'string'
     }
   },
-  required: ['placeId'],
+  required: ['place_id'],
   additionalProperties: false
 }
 
 async function getItems(ctx: Koa.Context) {
   const results = await database.queryViaFile(__dirname + '/getItems.sql', [
-    parseInt(ctx.query.placeId, 10)
+    parseInt(ctx.query.place_id, 10)
   ])
 
   ctx.status = 200

@@ -49,7 +49,7 @@ async function searchPlaces(ctx: Koa.Context) {
       types: googlePlace.types,
       photos: googlePlace.photos,
       address: googlePlace.vicinity,
-      gplaceId: place.gplace_id
+      gplace_id: place.gplace_id
     }
   })
 

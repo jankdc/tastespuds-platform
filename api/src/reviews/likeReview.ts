@@ -12,15 +12,7 @@ async function likeReview(ctx: Koa.Context) {
     ctx.params.reviewId
   ])
 
-  const like = rows[0]
-
-  ctx.body = {
-    id: like.id,
-    userId: like.user_id,
-    reviewId: like.review_id,
-    creationDate: like.creation_date
-  }
-
+  ctx.body = rows[0]
   ctx.status = 200
 }
 
