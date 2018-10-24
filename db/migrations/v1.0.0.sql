@@ -127,10 +127,10 @@ CREATE TABLE tastespuds.comment (
 -- like_review
 
 CREATE TABLE tastespuds.like_review (
-  id SERIAL PRIMARY KEY NOT NULL,
   user_id TEXT NOT NULL,
   review_id INTEGER NOT NULL,
   creation_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+  PRIMARY KEY(user_id, review_id),
 
   FOREIGN KEY (user_id)
     REFERENCES tastespuds.user (id)
@@ -144,10 +144,10 @@ CREATE TABLE tastespuds.like_review (
 -- like_comment
 
 CREATE TABLE tastespuds.like_comment (
-  id SERIAL PRIMARY KEY NOT NULL,
   user_id TEXT NOT NULL,
   comment_id INTEGER NOT NULL,
   creation_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+  PRIMARY KEY(user_id, comment_id),
 
   FOREIGN KEY (user_id)
     REFERENCES tastespuds.user (id)
