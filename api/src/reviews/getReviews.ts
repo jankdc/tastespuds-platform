@@ -28,7 +28,7 @@ async function getReviews(ctx: Koa.Context) {
 
   if (results.rowCount === 0) {
     ctx.status = 200
-    ctx.body = { reviews: [] }
+    ctx.body = []
     return
   }
 
