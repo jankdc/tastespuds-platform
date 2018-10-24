@@ -130,7 +130,9 @@ CREATE TABLE tastespuds.like_review (
   user_id TEXT NOT NULL,
   review_id INTEGER NOT NULL,
   creation_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-  PRIMARY KEY(user_id, review_id),
+
+  CONSTRAINT like_review_unique
+    PRIMARY KEY(user_id, review_id),
 
   FOREIGN KEY (user_id)
     REFERENCES tastespuds.user (id)
@@ -147,7 +149,9 @@ CREATE TABLE tastespuds.like_comment (
   user_id TEXT NOT NULL,
   comment_id INTEGER NOT NULL,
   creation_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-  PRIMARY KEY(user_id, comment_id),
+
+  CONSTRAINT like_comment_unique
+    PRIMARY KEY(user_id, comment_id),
 
   FOREIGN KEY (user_id)
     REFERENCES tastespuds.user (id)
