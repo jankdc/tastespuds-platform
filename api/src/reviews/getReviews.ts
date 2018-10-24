@@ -111,6 +111,10 @@ async function getReviews(ctx: Koa.Context) {
 
     review.assets = reviewAssetsResults.rows
 
+    // By default, COUNT operations is returned as strings
+    // https://github.com/brianc/node-postgres/pull/427
+    review.num_of_likes = parseInt(review.num_of_likes, 10)
+
     delete review.user_id
   }))
 
