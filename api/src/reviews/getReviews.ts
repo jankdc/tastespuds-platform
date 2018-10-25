@@ -82,6 +82,16 @@ async function getReviews(ctx: Koa.Context) {
     const a0user = a0usersRef[review.user_id]
     const gplace = gplacesRef[review.place.gplace_id]
 
+    const reviewLikesResults = await database.queryViaFile(
+      __dirname + '/getReviewLikes.sql',
+      [review.id, ctx.state.user.sub]
+    )
+
+    // This prop provides contextual information for the one who called the API
+    review.context = {
+      caller_like_id: reviewLikesResults.rows[0] && reviewLikesResults.rows[0].id
+    }
+
     review.place = {
       id: review.place.id,
       name: gplace.name,
@@ -96,13 +106,6 @@ async function getReviews(ctx: Koa.Context) {
       picture: a0user.picture,
       username: a0user.user_metadata.username
     }
-
-    const reviewLikesResults = await database.queryViaFile(
-      __dirname + '/getReviewLikes.sql',
-      [review.id, ctx.state.user.sub]
-    )
-
-    review.liked = reviewLikesResults.rowCount >= 1
 
     const reviewAssetsResults = await database.queryViaFile(
       __dirname + '/getReviewAssets.sql',
