@@ -37,39 +37,40 @@ export interface AddressComponent {
 }
 
 export function parseAddress(components: AddressComponent[]): Address {
-  const address: Address = {
-    street: '',
-    city: '',
-    country: '',
-    postal_code: ''
+  const reduceByTypes = (acc: any, item: AddressComponent): any => {
+    item.types.forEach((type) => {
+      const { short_name, long_name } = item
+      acc[type] = { long_name, short_name }
+    })
+
+    return acc
   }
 
-  components.forEach((c) => {
-    switch (c.types[0]) {
-      case 'street_address':
-          address.street = c.long_name
-          break
-      case 'street_number':
-          address.street = c.long_name
-          break
-      case 'route':
-          address.street = `${address.street} ${c.long_name}`
-          break
-      case 'neighborhood': case 'locality':
-          address.city = c.short_name
-          break
-      case 'postal_code':
-          address.postal_code = c.long_name
-          break
-      case 'country':
-          address.country = c.long_name
-          break
-      }
-  })
+  const addressByType = components.reduce(reduceByTypes, {})
 
-  address.street = address.street.trim()
+  const getComponent = (key: string, short?: boolean) => {
+    if (!addressByType[key]) {
+      return ''
+    }
 
-  return address
+    return short ? addressByType[key].short_name : addressByType.long_name
+  }
+
+  return {
+    city: getComponent('locality', true)
+      || getComponent('administrative_area_level_1', true)
+      || getComponent('administrative_area_level_2', true)
+      || getComponent('administrative_area_level_3', true)
+      || getComponent('administrative_area_level_4', true)
+      || getComponent('administrative_area_level_5', true),
+
+    street: getComponent('street_address')
+      || `${getComponent('street_number')} ${getComponent('route')}`.trim(),
+
+    country: getComponent('country'),
+
+    postal_code: getComponent('postal_code')
+  }
 }
 
 export interface SearchNearbyResponse {
