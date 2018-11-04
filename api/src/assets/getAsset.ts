@@ -7,6 +7,10 @@ async function getAsset(ctx: Koa.Context) {
     ctx.params.assetId
   ])
 
+  if (results.rowCount === 0) {
+    return ctx.throw(404)
+  }
+
   const { type, data } = results.rows[0]
 
   ctx.status = 200
