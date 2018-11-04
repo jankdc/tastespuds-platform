@@ -8,7 +8,9 @@ async function getAsset(ctx: Koa.Context) {
   ])
 
   if (results.rowCount === 0) {
-    return ctx.throw(404)
+    return ctx.throw(404, 'Asset not found', {
+      id: 'asset-not-found'
+    })
   }
 
   const { type, data } = results.rows[0]
