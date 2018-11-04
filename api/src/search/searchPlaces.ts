@@ -1,4 +1,5 @@
 import * as Koa from 'koa'
+import { PoolClient } from 'pg'
 
 import database from '../clients/database'
 import checkJwt from '../check-jwt'
@@ -22,38 +23,49 @@ async function searchPlaces(ctx: Koa.Context) {
     lng: parseFloat(parsedQs[1])
   }
 
-  const googlePlaces = await gplaces.searchNearby(userLocation)
-  const googlePlaceIds = googlePlaces.map((gp) => gp.place_id)
-  const googlePlaceRef = googlePlaces.reduce((obj, place) => {
-    obj[place.place_id] = place
-    delete obj.place_id
-    return obj
-  }, {} as any)
+  await database.createTransaction(async (client) => {
+    const googlePlaces = await gplaces.searchNearby(userLocation)
 
-  // Cache new google place ids in the database
-  await database.queryViaFile(__dirname + '/insertPlaces.sql', [
-    googlePlaceIds
-  ])
+    ctx.body = await Promise.all(googlePlaces.map(async (place) => {
+      const existingPlace = await searchGooglePlace(client, place)
 
-  const results = await database.queryViaFile(__dirname + '/searchPlaces-ids.sql', [
-    googlePlaceIds
-  ])
+      if (existingPlace) {
+        return existingPlace
+      }
 
-  // Interpolate google place data as part of the response
-  const places = results.rows.map((place) => {
-    const googlePlace = googlePlaceRef[place.gplace_id]
+      return insertGooglePlace(client, place)
+    }))
+  })
+}
 
-    return {
-      id: place.id,
-      name: googlePlace.name,
-      types: googlePlace.types,
-      photos: googlePlace.photos,
-      address: googlePlace.vicinity,
-      gplace_id: place.gplace_id
-    }
+async function searchGooglePlace(client: PoolClient, place: gplaces.Place) {
+  const dbArgs = [`google|${place.place_id}`]
+  const filePath = __dirname + '/searchPlace.sql'
+  const { rows } = await database.queryClientViaFile(client, filePath, dbArgs)
+
+  return rows[0]
+}
+
+async function insertGooglePlace(client: PoolClient, place: gplaces.Place) {
+  const { result: details } = await gplaces.getPlaceDetails(place.place_id, {
+    fields: 'address_components'
   })
 
-  ctx.body = places
+  const address = gplaces.parseAddress(details.address_components)
+
+  const filePath = __dirname + '/insertPlace.sql'
+  const { rows } = await database.queryClientViaFile(client, filePath, [
+    place.name,
+    place.types,
+    [place.geometry.location.lat, place.geometry.location.lng],
+    address.street,
+    address.city,
+    address.country,
+    address.postal_code,
+    `google|${place.place_id}`
+  ])
+
+  return rows[0]
 }
 
 export default [

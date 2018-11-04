@@ -7,15 +7,69 @@ const BASE_URL = 'https://maps.googleapis.com/maps/api/place'
 
 export interface Place {
   name: string
+  types: string[]
   place_id: string
   geometry: {
     location: Location
   }
 }
 
+export interface PlaceDetails {
+  address_components: AddressComponent[]
+}
+
 export interface Location {
   lat: number,
   lng: number
+}
+
+export interface Address {
+  street: string
+  city: string
+  country: string
+  postal_code: string
+}
+
+export interface AddressComponent {
+  types: string[]
+  long_name: string
+  short_name: string
+}
+
+export function parseAddress(components: AddressComponent[]): Address {
+  const address: Address = {
+    street: '',
+    city: '',
+    country: '',
+    postal_code: ''
+  }
+
+  components.forEach((c) => {
+    switch (c.types[0]) {
+      case 'street_address':
+          address.street = c.long_name
+          break
+      case 'street_number':
+          address.street = c.long_name
+          break
+      case 'route':
+          address.street = `${address.street} ${c.long_name}`
+          break
+      case 'neighborhood': case 'locality':
+          address.city = c.short_name
+          break
+      case 'postal_code':
+          address.postal_code = c.long_name
+          break
+      case 'country':
+          address.country = c.long_name
+          break
+      }
+  })
+
+  address.street = address.street.trim()
+
+  return address
 }
 
 export interface SearchNearbyResponse {
@@ -71,4 +125,30 @@ export async function searchByKeyword(keyword: string, options?: SearcyByKeyword
   const response = await got(searchUrl, { json: true })
 
   return response.body as SearchByKeywordResponse
+}
+
+export interface GetPlaceDetailsOptions {
+  fields?: string
+}
+
+export interface GetPlaceDetailsResponse {
+  status: string
+  result: PlaceDetails
+}
+
+export async function getPlaceDetails(id: string, options?: GetPlaceDetailsOptions) {
+  const queries: any = {
+    key: API_KEY,
+    placeid: id
+  }
+
+  if (options) {
+    Object.assign(queries, options)
+  }
+
+  const searchUrl = BASE_URL + '/details/json?' + qs.stringify(queries)
+
+  const response = await got(searchUrl, { json: true })
+
+  return response.body as GetPlaceDetailsResponse
 }

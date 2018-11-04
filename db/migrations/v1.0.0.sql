@@ -15,10 +15,41 @@ CREATE TABLE tastespuds.user (
 
 CREATE TABLE tastespuds.place (
   id SERIAL PRIMARY KEY NOT NULL,
-  gplace_id TEXT NOT NULL UNIQUE,
+  name TEXT NOT NULL,
+  types TEXT[] NOT NULL,
+  location FLOAT[] NOT NULL,
 
-  CONSTRAINT no_empty_gplace_id
-    CHECK (gplace_id != '')
+  street TEXT NOT NULL,
+  city TEXT NOT NULL,
+  country TEXT NOT NULL,
+  postal_code TEXT NOT NULL,
+  address_id TEXT NOT NULL UNIQUE,
+
+  creation_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+
+  CONSTRAINT no_empty_name
+    CHECK (name != ''),
+
+  CONSTRAINT location_format
+    CHECK (array_length(location, 1) = 2),
+
+  CONSTRAINT no_empty_types
+    CHECK (array_length(types, 1) != 0),
+
+  CONSTRAINT no_empty_street
+    CHECK (street != ''),
+
+  CONSTRAINT no_empty_city
+    CHECK (city != ''),
+
+  CONSTRAINT no_empty_country
+    CHECK (country != ''),
+
+  CONSTRAINT no_empty_postal_code
+    CHECK (postal_code != ''),
+
+  CONSTRAINT no_empty_address_id
+    CHECK (address_id != '')
 );
 
 -- item

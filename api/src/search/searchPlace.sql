@@ -3,4 +3,4 @@ SELECT
 FROM
   tastespuds.place
 WHERE
-  gplace_id = ANY($1::text[])
+  address_id = $1::text

@@ -1,7 +1,6 @@
 import * as Koa from 'koa'
 
 import * as auth0Users from '../clients/auth0-users'
-import * as gplaces from '../clients/google-places'
 import * as math from '../math'
 import database from '../clients/database'
 import checkJwt from '../check-jwt'
@@ -25,6 +24,7 @@ interface UserLocation {
 async function getReviews(ctx: Koa.Context) {
   const parsedQs = ctx.query.location.split(',')
   const results = await database.queryViaFile(__dirname + '/getReviews.sql')
+  const reviews = results.rows
 
   if (results.rowCount === 0) {
     ctx.status = 200
@@ -37,32 +37,15 @@ async function getReviews(ctx: Koa.Context) {
     lng: parseFloat(parsedQs[1])
   }
 
-  const allPlaces = await gplaces.searchNearby(userLocation)
-  const mapsById = (name: string) => (acc: any, item: any) => {
-    const copy = Object.assign({}, item)
-    acc[copy[name]] = copy
-    delete copy[name]
-    return acc
-  }
-
-  const gplaceIds = allPlaces.map((p) => p.place_id)
-
-  // Hot means the past 7 days and it is relatively near the user location
-  const hotReviews = results.rows.filter((r) => gplaceIds.includes(r.place.gplace_id))
-  const gplacesRef = allPlaces.reduce(mapsById('place_id'), {})
-  const furthestKm = furthestDistanceInKm(
-    hotReviews.map((h) => gplacesRef[h.place.gplace_id]),
-    userLocation
-  )
+  const furthestKm = furthestDistanceInKm(reviews, userLocation)
   const hotScoreFn = (review: any): number => {
-    const place = gplacesRef[review.place.gplace_id] as gplaces.Place
+    const [lat, lng] = review.place.location
 
-    const location = place.geometry.location
     const distance = math.diffInKm(
       userLocation.lat,
       userLocation.lng,
-      location.lat,
-      location.lng
+      lat,
+      lng
     )
 
     const distanceWeightedScore = 1 - (distance / furthestKm)
@@ -72,19 +55,30 @@ async function getReviews(ctx: Koa.Context) {
       + (3 * review.likes_weighted_score)
   }
 
-  hotReviews.sort((reviewA, reviewB) => hotScoreFn(reviewB) - hotScoreFn(reviewA))
+  reviews.sort((reviewA, reviewB) => hotScoreFn(reviewB) - hotScoreFn(reviewA))
 
-  const allUsers = await auth0Users.getUsersViaIds(hotReviews.map((r) => r.user_id))
+  const allUsers = await auth0Users.getUsersViaIds(reviews.map((r) => r.user_id))
+  const mapsById = (name: string) => (acc: any, item: any) => {
+    const copy = Object.assign({}, item)
+    acc[copy[name]] = copy
+    delete copy[name]
+    return acc
+  }
+
   const a0usersRef = allUsers.reduce(mapsById('user_id'), {})
 
   // Replace references in review object
-  await Promise.all(hotReviews.map(async (review) => {
+  await Promise.all(reviews.map(async (review) => {
     const a0user = a0usersRef[review.user_id]
-    const gplace = gplacesRef[review.place.gplace_id]
 
     const reviewLikesResults = await database.queryViaFile(
       __dirname + '/getReviewLikes.sql',
       [review.id, ctx.state.user.sub]
+    )
+
+    const reviewAssetsResults = await database.queryViaFile(
+      __dirname + '/getReviewAssets.sql',
+      [review.id]
     )
 
     // This prop provides contextual information for the one who called the API
@@ -92,27 +86,13 @@ async function getReviews(ctx: Koa.Context) {
       caller_like_id: reviewLikesResults.rows[0] && reviewLikesResults.rows[0].id
     }
 
-    review.place = {
-      id: review.place.id,
-      name: gplace.name,
-      types: gplace.types,
-      photos: gplace.photos,
-      address: gplace.vicinity,
-      gplace_id: review.place.gplace_id
-    }
+    review.assets = reviewAssetsResults.rows
 
     review.user = {
       id: a0user.user_id,
       picture: a0user.picture,
       username: a0user.user_metadata.username
     }
-
-    const reviewAssetsResults = await database.queryViaFile(
-      __dirname + '/getReviewAssets.sql',
-      [review.id]
-    )
-
-    review.assets = reviewAssetsResults.rows
 
     // By default, COUNT operations is returned as strings
     // https://github.com/brianc/node-postgres/pull/427
@@ -121,16 +101,16 @@ async function getReviews(ctx: Koa.Context) {
     delete review.user_id
   }))
 
-  ctx.body = hotReviews
+  ctx.body = reviews
 }
 
-function furthestDistanceInKm(places: gplaces.Place[], location: UserLocation): number {
-  const distances = places.map((place) => {
+function furthestDistanceInKm(reviews: any[], location: UserLocation): number {
+  const distances = reviews.map((review) => {
     return math.diffInKm(
       location.lat,
       location.lng,
-      place.geometry.location.lat,
-      place.geometry.location.lng
+      review.place.location[0],
+      review.place.location[1]
     )
   })
 
