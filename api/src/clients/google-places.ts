@@ -53,11 +53,12 @@ export function parseAddress(components: AddressComponent[]): Address {
       return ''
     }
 
-    return short ? addressByType[key].short_name : addressByType.long_name
+    return short ? addressByType[key].short_name : addressByType[key].long_name
   }
 
   return {
     city: getComponent('locality', true)
+      || getComponent('postal_town', true)
       || getComponent('administrative_area_level_1', true)
       || getComponent('administrative_area_level_2', true)
       || getComponent('administrative_area_level_3', true)
