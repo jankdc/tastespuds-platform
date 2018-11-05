@@ -1,4 +1,6 @@
 import * as Koa from 'koa'
+
+import sqb from '../sql-builder'
 import checkJwt from '../check-jwt'
 import database from '../clients/database'
 import { createValidator } from '../input'
@@ -8,16 +10,72 @@ const inputSchema = {
   properties: {
     place_id: {
       type: 'string'
-    }
+    },
+    location: {
+      type: 'string'
+    },
+    city: {
+      type: 'string'
+    },
+    sort: {
+      type: 'string',
+      enum: ['top', 'popular', 'recent']
+    },
   },
-  required: ['place_id'],
+  oneOf: [
+    { required: ['place_id'] },
+    { required: ['location'] },
+    { required: ['city'] }
+  ],
   additionalProperties: false
 }
 
 async function getItems(ctx: Koa.Context) {
-  const results = await database.queryViaFile(__dirname + '/getItems.sql', [
-    parseInt(ctx.query.place_id, 10)
-  ])
+  let parsedLocation
+
+  if (ctx.query.location) {
+    const [latStr, lngStr] = ctx.query.location.split(',')
+    parsedLocation = [
+      parseFloat(latStr),
+      parseFloat(lngStr)
+    ]
+  }
+
+  const baseSql = sqb.select()
+    .from('tastespuds.item', 'i')
+    .field('i.*')
+    .field('AVG(r.rating)', 'rating')
+    .field('COUNT(r.*) + COUNT(lr.*)', 'popularity')
+    .join('tastespuds.place', 'p', 'i.place_id = p.id')
+    .join('tastespuds.review', 'r', 'i.id = r.item_id')
+    .join('tastespuds.like_review', 'lr', 'r.id = lr.review_id')
+
+  if (ctx.query.place_id) {
+    baseSql.where('p.id = ?', parseInt(ctx.query.place_id, 10))
+  }
+
+  if (ctx.query.city) {
+    baseSql.where('p.city = ?', ctx.query.city)
+  }
+
+  if (parsedLocation) {
+    baseSql.where('dist_diff_in_km(i.location, ?) < 5', parsedLocation)
+  }
+
+  baseSql.group('i.id')
+
+  switch (ctx.query.sort) {
+    case 'top':
+      baseSql.order('rating', false)
+      break
+    case 'popular':
+      baseSql.order('popularity', false)
+      break
+  }
+
+  const { text, values } = baseSql.toParam()
+
+  const results = await database.queryViaText(text, values)
 
   ctx.status = 200
   ctx.body = results.rows

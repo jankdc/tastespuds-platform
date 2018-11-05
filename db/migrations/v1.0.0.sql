@@ -192,4 +192,31 @@ CREATE TABLE tastespuds.like_comment (
     ON DELETE CASCADE
 );
 
+-- helper functions
+
+CREATE OR REPLACE FUNCTION dist_diff_on_km(point1 float[], point2 float[])
+RETURNS float AS $$
+DECLARE
+  r float;
+  a float;
+  c float;
+  dLat float;
+  dLng float;
+BEGIN
+  r := 6371; -- radius of the earth in km
+
+  dLat := radians(point2[0] - point1[0]);
+  dLng := radians(point2[1] - point1[1]);
+
+  a :=
+    sin(dLat / 2) * sin(dLat / 2) +
+    cos(radians(point1[0])) * cos(radians(point2[0])) *
+    sin(dLon / 2) * sin(dLon / 2);
+
+  c := 2 * atan2(sqrt(a), sqrt(1 - a));
+
+  return r * c; -- distance in km
+END;
+$$ LANGUAGE plpgsql;
+
 INSERT INTO tastespuds.db_version (version) VALUES ('{1,0,0}');
