@@ -44,8 +44,11 @@ async function getItems(ctx: Koa.Context) {
   const baseSql = sqb.select()
     .from('tastespuds.item', 'i')
     .field('i.*')
+    .field('COUNT(r.*)', 'reviews')
+    .field('COUNT(lr.*)', 'likes')
     .field('AVG(r.rating)', 'rating')
     .field('COUNT(r.*) + COUNT(lr.*)', 'popularity')
+    .field('MAX(r.creation_date)', 'recent_review_date')
     .join('tastespuds.place', 'p', 'i.place_id = p.id')
     .join('tastespuds.review', 'r', 'i.id = r.item_id')
     .join('tastespuds.like_review', 'lr', 'r.id = lr.review_id')
@@ -70,6 +73,9 @@ async function getItems(ctx: Koa.Context) {
       break
     case 'popular':
       baseSql.order('popularity', false)
+      break
+    case 'recent':
+      baseSql.order('recent_review_date', false)
       break
   }
 
