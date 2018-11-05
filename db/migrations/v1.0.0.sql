@@ -36,9 +36,6 @@ CREATE TABLE tastespuds.place (
   CONSTRAINT no_empty_types
     CHECK (array_length(types, 1) != 0),
 
-  CONSTRAINT no_empty_street
-    CHECK (street != ''),
-
   CONSTRAINT no_empty_city
     CHECK (city != ''),
 
