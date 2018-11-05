@@ -66,6 +66,7 @@ export function parseAddress(components: AddressComponent[]): Address {
       || getComponent('administrative_area_level_5', true),
 
     street: getComponent('street_address')
+      || `${getComponent('subpremise')} ${getComponent('premise')}`.trim()
       || `${getComponent('street_number')} ${getComponent('route')}`.trim(),
 
     country: getComponent('country'),
@@ -94,12 +95,27 @@ export async function searchNearby(location: Location) {
     got(createUrl('bar'), { json: true })
   ])
 
+  const reduceIds = (acc: any, place: Place) => {
+    return Object.assign({}, acc, {
+      [place.place_id]: place
+    })
+  }
+
   // Let's just ignore the place API errors as we don't really need to know why it failed
   // TODO: Log the error server-side for monitoring purposes
   return responses
     .map((r) => r.body as SearchNearbyResponse)
     .map((r) => r.results)
-    .reduce((acc, arr) => acc.concat(arr), [])
+    .reduce((master, places) => {
+      // Reason we're doing this instead of just concatenating the arrays together
+      // is because some places with the same place_id can occur in different place types
+      // e.g. (restaurant, bars)
+      const masterMap = master.reduce(reduceIds, {})
+      const placesMap = places.reduce(reduceIds, {})
+      const mergedMap = Object.assign({}, masterMap, placesMap)
+
+      return Object.values(mergedMap)
+    }, [])
 }
 
 export interface SearcyByKeywordOptions {
