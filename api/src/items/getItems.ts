@@ -43,15 +43,18 @@ async function getItems(ctx: Koa.Context) {
 
   const baseSql = sqb.select()
     .from('tastespuds.item', 'i')
-    .field('i.*')
+    .field('i.id')
+    .field('i.name')
+    .field('i.creation_date')
     .field('COUNT(r.*)', 'reviews')
     .field('COUNT(lr.*)', 'likes')
     .field('AVG(r.rating)', 'rating')
+    .field('json_agg(p.*)->0', 'place')
     .field('COUNT(r.*) + COUNT(lr.*)', 'popularity')
     .field('MAX(r.creation_date)', 'recent_review_date')
     .join('tastespuds.place', 'p', 'i.place_id = p.id')
     .join('tastespuds.review', 'r', 'i.id = r.item_id')
-    .join('tastespuds.like_review', 'lr', 'r.id = lr.review_id')
+    .left_join('tastespuds.like_review', 'lr', 'r.id = lr.review_id')
 
   if (ctx.query.place_id) {
     baseSql.where('p.id = ?', parseInt(ctx.query.place_id, 10))
