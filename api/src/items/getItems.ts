@@ -41,11 +41,29 @@ async function getItems(ctx: Koa.Context) {
     ]
   }
 
+  const mainSql = sqb.select()
+    .from('tastespuds.review', 'r')
+    .field('r.*')
+    .field('COUNT(lr.*)', 'likes')
+    .field('json_agg(ra.*)->0->\'asset_id\'', 'asset')
+    .join('tastespuds.review_asset', 'ra', 'r.id = ra.review_id')
+    .left_join('tastespuds.like_review', 'lr', 'r.id = lr.review_id')
+    .where('r.item_id = i.id')
+    .group('r.id')
+    .order('likes', false)
+    .limit(1)
+
+  const withSql = sqb.select()
+    .from('popular_review')
+    .field('asset')
+    .with('popular_review', mainSql)
+
   const baseSql = sqb.select()
     .from('tastespuds.item', 'i')
     .field('i.id')
     .field('i.name')
     .field('i.creation_date')
+    .field(withSql, 'asset')
     .field('COUNT(r.*)', 'reviews')
     .field('COUNT(lr.*)', 'likes')
     .field('AVG(r.rating)', 'rating')
