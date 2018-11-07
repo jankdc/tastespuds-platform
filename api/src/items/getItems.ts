@@ -73,6 +73,7 @@ async function getItems(ctx: Koa.Context) {
     .join('tastespuds.place', 'p', 'i.place_id = p.id')
     .join('tastespuds.review', 'r', 'i.id = r.item_id')
     .left_join('tastespuds.like_review', 'lr', 'r.id = lr.review_id')
+    .limit(100)
 
   if (ctx.query.place_id) {
     baseSql.where('p.id = ?', parseInt(ctx.query.place_id, 10))
