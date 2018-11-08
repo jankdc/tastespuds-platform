@@ -14,6 +14,9 @@ const inputSchema = {
     location: {
       type: 'string'
     },
+    keyword: {
+      type: 'string'
+    },
     city: {
       type: 'string'
     },
@@ -25,6 +28,7 @@ const inputSchema = {
   oneOf: [
     { required: ['place_id'] },
     { required: ['location'] },
+    { required: ['keyword'] },
     { required: ['city'] }
   ],
   additionalProperties: false
@@ -73,7 +77,10 @@ async function getItems(ctx: Koa.Context) {
     .join('tastespuds.place', 'p', 'i.place_id = p.id')
     .join('tastespuds.review', 'r', 'i.id = r.item_id')
     .left_join('tastespuds.like_review', 'lr', 'r.id = lr.review_id')
-    .limit(100)
+
+  if (ctx.query.keyword) {
+    baseSql.where('i.name % ?', ctx.query.keyword)
+  }
 
   if (ctx.query.place_id) {
     baseSql.where('p.id = ?', parseInt(ctx.query.place_id, 10))
@@ -100,6 +107,8 @@ async function getItems(ctx: Koa.Context) {
       baseSql.order('recent_review_date', false)
       break
   }
+
+  baseSql.limit(100)
 
   const { text, values } = baseSql.toParam()
 

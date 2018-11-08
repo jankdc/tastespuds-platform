@@ -1,4 +1,10 @@
 ------------------------------------
+-- Extensions
+------------------------------------
+
+CREATE EXTENSION pg_trgm;
+
+------------------------------------
 -- Tables
 ------------------------------------
 
@@ -63,6 +69,12 @@ CREATE TABLE tastespuds.item (
   FOREIGN KEY (place_id)
     REFERENCES tastespuds.place (id)
 );
+
+CREATE INDEX
+  name_idx
+ON
+  tastespuds.item
+USING GIST (name gist_trgm_ops);
 
 -- asset
 
@@ -192,7 +204,9 @@ CREATE TABLE tastespuds.like_comment (
     ON DELETE CASCADE
 );
 
--- helper functions
+------------------------------------
+-- Functions
+------------------------------------
 
 CREATE OR REPLACE FUNCTION dist_diff_on_km(point1 float[], point2 float[])
 RETURNS float AS $$
