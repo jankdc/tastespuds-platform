@@ -28,7 +28,6 @@ const inputSchema = {
   oneOf: [
     { required: ['place_id'] },
     { required: ['location'] },
-    { required: ['keyword'] },
     { required: ['city'] }
   ],
   additionalProperties: false
