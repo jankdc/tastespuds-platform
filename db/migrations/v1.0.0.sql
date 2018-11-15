@@ -104,10 +104,15 @@ CREATE TABLE tastespuds.review (
   item_id INTEGER NOT NULL,
   user_id TEXT NOT NULL,
   content TEXT NOT NULL,
+  highlight TEXT NOT NULL,
+  suggestion TEXT,
   creation_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
 
   CONSTRAINT no_empty_content
     CHECK (content != ''),
+
+  CONSTRAINT no_empty_highlight
+    CHECK (highlight != ''),
 
   CONSTRAINT rating_must_be_in_range
     CHECK (rating > 0 AND rating <= 5),

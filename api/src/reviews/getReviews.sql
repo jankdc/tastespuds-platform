@@ -3,6 +3,8 @@ SELECT
   r.user_id,
   r.rating,
   r.content,
+  r.highlight,
+  r.suggestion,
   r.creation_date,
 
   json_agg(ra.*) AS assets,

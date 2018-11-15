@@ -24,6 +24,12 @@ const inputSchema = {
     user_id: {
       type: 'string'
     },
+    highlight: {
+      type: 'string'
+    },
+    suggestion: {
+      type: 'string'
+    },
     item: {
       oneOf: [
         { type: 'integer' },
@@ -44,7 +50,14 @@ const inputSchema = {
     }
   },
   additionalProperties: false,
-  required: ['user_id', 'assets', 'rating', 'content', 'item']
+  required: [
+    'user_id',
+    'highlight',
+    'assets',
+    'rating',
+    'content',
+    'item'
+  ]
 }
 
 async function addReview(ctx: Koa.Context) {
@@ -68,7 +81,9 @@ async function addReview(ctx: Koa.Context) {
       body.user_id,
       body.content,
       body.rating,
-      body.item
+      body.item,
+      body.highlight,
+      body.suggestion
     ])
 
     await Promise.all(body.assets.map((assetId: number) => {
