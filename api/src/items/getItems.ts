@@ -56,9 +56,15 @@ async function getItems(ctx: Koa.Context) {
     .order('likes', false)
     .limit(1)
 
-  const withSql = sqb.select()
+  const assetSql = sqb.select()
     .from('popular_review')
     .field('asset')
+    .with('popular_review', mainSql)
+
+  // TODO: This is just lazy. Need to find another to remove this redundancy
+  const highlightSql = sqb.select()
+    .from('popular_review')
+    .field('highlight')
     .with('popular_review', mainSql)
 
   const baseSql = sqb.select()
@@ -66,7 +72,8 @@ async function getItems(ctx: Koa.Context) {
     .field('i.id')
     .field('i.name')
     .field('i.creation_date')
-    .field(withSql, 'asset')
+    .field(assetSql, 'asset')
+    .field(highlightSql, 'highlight')
     .field('COUNT(r.*)', 'reviews')
     .field('COUNT(lr.*)', 'likes')
     .field('AVG(r.rating)', 'rating')
