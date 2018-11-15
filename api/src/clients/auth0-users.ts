@@ -10,6 +10,7 @@ export interface UserInfo {
   email: string
   email_verified: boolean
   name: string
+  nickname: string
   picture: string
   user_id: string
   updated_at: string

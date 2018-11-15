@@ -7,6 +7,7 @@ import * as places from './places'
 import * as items from './items'
 import * as users from './users'
 import * as oauth from './oauth'
+import * as me from './me'
 
 const router = new Router()
 router.use(oauth.routes())
@@ -17,5 +18,6 @@ router.use(places.routes())
 router.use(assets.routes())
 router.use(search.routes())
 router.use(reviews.routes())
+router.use(me.routes())
 
 export const routes = () => router.routes()
