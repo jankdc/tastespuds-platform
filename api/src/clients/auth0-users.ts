@@ -14,6 +14,7 @@ export interface UserInfo {
   picture: string
   user_id: string
   updated_at: string
+  user_metadata: any
 }
 
 export interface ApiAccess {

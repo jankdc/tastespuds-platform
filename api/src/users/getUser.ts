@@ -23,7 +23,7 @@ async function getUser(ctx: Koa.Context) {
     email: user.email,
     picture: user.picture,
     reviews: result.rows,
-    username: user.nickname
+    username: user.user_metadata.username
   }
 }
 
