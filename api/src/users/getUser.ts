@@ -5,7 +5,7 @@ import database from '../clients/database'
 import * as auth0Users from '../clients/auth0-users'
 
 async function getUser(ctx: Koa.Context) {
-  const [ user ] = await auth0Users.getUsers(`nickname:${ctx.params.username}`)
+  const [ user ] = await auth0Users.getUsers(`app_metadata.username:${ctx.params.username}`)
 
   if (!user) {
     return ctx.throw(404, 'Username doesn\'t exist', {
