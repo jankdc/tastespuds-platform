@@ -20,10 +20,16 @@ async function getComments(ctx: Koa.Context) {
   const result = await database.queryViaFile(__dirname + '/getComments.sql', [
     parseInt(ctx.params.reviewId, 10),
     ctx.state.user.sub,
-    cursor
+    cursor || null
   ])
 
   const comments = result.rows
+
+  if (comments.length === 0) {
+    return ctx.body = {
+      comments
+    }
+  }
 
   const usersArr = await auth0Users.getUsersViaIds([
     ...new Set(comments.map((c) => c.user_id ))
