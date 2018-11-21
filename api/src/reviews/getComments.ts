@@ -20,7 +20,7 @@ async function getComments(ctx: Koa.Context) {
   const result = await database.queryViaFile(__dirname + '/getComments.sql', [
     parseInt(ctx.params.reviewId, 10),
     ctx.state.user.sub,
-    cursor || null
+    cursor
   ])
 
   const comments = result.rows

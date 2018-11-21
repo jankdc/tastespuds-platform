@@ -19,7 +19,7 @@ LEFT JOIN
 WHERE
   c.review_id = $1
 AND
-  ($3::timestamptz IS NULL OR c.creation_date > $3::timestamptz)
+  c.creation_date < $3::timestamptz
 GROUP BY
   c.id
 ORDER BY
