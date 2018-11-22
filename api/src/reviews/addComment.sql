@@ -21,10 +21,8 @@ SELECT
   c.parent_id,
   c.content,
   c.creation_date,
-  json_agg(u.*)->0 AS user
+  to_json(u.*) AS user
 FROM
   new_comment c
 INNER JOIN
   tastespuds.user u ON u.id = c.user_id
-GROUP BY
-  c.id
