@@ -2,21 +2,26 @@ import * as Koa from 'koa'
 
 import checkJwt from '../check-jwt'
 import database from '../clients/database'
-import * as auth0Users from '../clients/auth0-users'
 
 async function getMe(ctx: Koa.Context) {
-  const [ user ] = await auth0Users.getUsers(`user_id:${ctx.state.user.sub}`)
-  const result = await database.queryViaFile(__dirname + '/getMeReviews.sql', [
-    user.user_id
+  const userResult = await database.queryViaFile(__dirname + '/getMe.sql', [
+    ctx.state.user.sub
   ])
 
+  const user = userResult.rows[0]
+
+  const reviewsResult = await database.queryViaFile(__dirname + '/getMeReviews.sql', [
+    ctx.state.user.sub
+  ])
+
+  const reviews = reviewsResult.rows
+
   ctx.body = {
-    id: user.user_id,
-    name: user.name,
+    id: user.id,
     email: user.email,
     picture: user.picture,
-    reviews: result.rows,
-    username: user.user_metadata.username
+    reviews,
+    username: user.username
   }
 }
 

@@ -9,9 +9,12 @@ WITH caller_comment AS (
 SELECT
   c.*,
   COUNT(lc.*) AS num_of_likes,
+  json_agg(u.*)->0 AS user,
   json_agg(cc.*)->0->'id' AS caller_like_id
 FROM
   tastespuds.comment c
+INNER JOIN
+  tastespuds.user u ON u.id = c.user_id
 LEFT JOIN
   caller_comment cc ON cc.comment_id = c.id
 LEFT JOIN

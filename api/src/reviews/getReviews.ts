@@ -1,6 +1,5 @@
 import * as Koa from 'koa'
 
-import * as auth0Users from '../clients/auth0-users'
 import * as math from '../math'
 import database from '../clients/database'
 import checkJwt from '../check-jwt'
@@ -57,20 +56,8 @@ async function getReviews(ctx: Koa.Context) {
 
   reviews.sort((reviewA, reviewB) => hotScoreFn(reviewB) - hotScoreFn(reviewA))
 
-  const allUsers = await auth0Users.getUsersViaIds(reviews.map((r) => r.user_id))
-  const mapsById = (name: string) => (acc: any, item: any) => {
-    const copy = Object.assign({}, item)
-    acc[copy[name]] = copy
-    delete copy[name]
-    return acc
-  }
-
-  const a0usersRef = allUsers.reduce(mapsById('user_id'), {})
-
   // Replace references in review object
   await Promise.all(reviews.map(async (review) => {
-    const a0user = a0usersRef[review.user_id]
-
     const reviewLikesResults = await database.queryViaFile(
       __dirname + '/getReviewLikes.sql',
       [review.id, ctx.state.user.sub]
@@ -88,17 +75,9 @@ async function getReviews(ctx: Koa.Context) {
 
     review.assets = reviewAssetsResults.rows
 
-    review.user = {
-      id: a0user.user_id,
-      picture: a0user.picture,
-      username: a0user.user_metadata.username
-    }
-
     // By default, COUNT operations is returned as strings
     // https://github.com/brianc/node-postgres/pull/427
     review.num_of_likes = parseInt(review.num_of_likes, 10)
-
-    delete review.user_id
   }))
 
   ctx.body = reviews

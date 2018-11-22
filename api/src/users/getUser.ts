@@ -2,27 +2,25 @@ import * as Koa from 'koa'
 
 import checkJwt from '../check-jwt'
 import database from '../clients/database'
-import * as auth0Users from '../clients/auth0-users'
 
 async function getUser(ctx: Koa.Context) {
-  const [ user ] = await auth0Users.getUsers(`app_metadata.username:${ctx.params.username}`)
+  const userResult = await database.queryViaFile(__dirname + '/getUser.sql', [
+    ctx.state.user.sub
+  ])
 
-  if (!user) {
-    return ctx.throw(404, 'Username doesn\'t exist', {
-      id: 'INVALID_USERNAME'
-    })
-  }
+  const user = userResult.rows[0]
 
-  const result = await database.queryViaFile(__dirname + '/getUserReviews.sql', [
+  const reviewsResult = await database.queryViaFile(__dirname + '/getUserReviews.sql', [
     user.user_id
   ])
 
+  const reviews = reviewsResult.rows
+
   ctx.body = {
-    id: user.user_id,
-    name: user.name,
+    id: user.id,
     email: user.email,
     picture: user.picture,
-    reviews: result.rows,
+    reviews,
     username: user.user_metadata.username
   }
 }

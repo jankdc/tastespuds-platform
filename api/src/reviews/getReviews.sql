@@ -1,6 +1,5 @@
 SELECT
   r.id,
-  r.user_id,
   r.rating,
   r.content,
   r.highlight,
@@ -8,6 +7,7 @@ SELECT
   r.creation_date,
 
   json_agg(ra.*) AS assets,
+  json_agg(u.*)->0 AS user,
   json_agg(i.*)->0 AS item,
   json_agg(p.*)->0 AS place,
 
@@ -29,6 +29,8 @@ FROM
   tastespuds.review r
 INNER JOIN
   tastespuds.review_asset ra ON r.id = ra.review_id
+INNER JOIN
+  tastespuds.user u ON u.id = r.user_id
 INNER JOIN
   tastespuds.item i ON r.item_id = i.id
 INNER JOIN
