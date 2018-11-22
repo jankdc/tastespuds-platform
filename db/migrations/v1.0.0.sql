@@ -12,9 +12,21 @@ CREATE EXTENSION pg_trgm;
 
 CREATE TABLE tastespuds.user (
   id TEXT PRIMARY KEY NOT NULL,
+  email TEXT NOT NULL UNIQUE,
+  picture TEXT NOT NULL,
+  username TEXT NOT NULL UNIQUE,
 
   CONSTRAINT no_empty_id
-    CHECK (id != '')
+    CHECK (id != ''),
+
+  CONSTRAINT no_empty_email
+    CHECK (email != ''),
+
+  CONSTRAINT no_empty_picture
+    CHECK (picture != ''),
+
+  CONSTRAINT no_empty_username
+    CHECK (username != '')
 );
 
 -- place
