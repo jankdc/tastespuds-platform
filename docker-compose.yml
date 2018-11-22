@@ -17,6 +17,8 @@ services:
       - AUTH0_USERS_CLIENT_ID
       - AUTH0_USERS_CLIENT_SECRET
       - GOOGLE_PLACES_API_KEY
+      - STREAMJS_API_KEY
+      - STREAMJS_API_SECRET
 
     ports:
       - "8080:8080"

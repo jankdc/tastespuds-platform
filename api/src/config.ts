@@ -20,6 +20,14 @@ export const databaseUrl = env.get('DATABASE_URL')
   .required()
   .asString()
 
+export const streamJsApiKey = env.get('STREAMJS_API_KEY')
+  .required()
+  .asString()
+
+export const streamJsApiSecret = env.get('STREAMJS_API_SECRET')
+  .required()
+  .asString()
+
 export const auth0ClientId = env.get('AUTH0_CLIENT_ID')
   .required()
   .asString()
