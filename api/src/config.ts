@@ -20,6 +20,10 @@ export const databaseUrl = env.get('DATABASE_URL')
   .required()
   .asString()
 
+export const streamJsAppId = env.get('STREAMJS_APP_ID')
+  .required()
+  .asString()
+
 export const streamJsApiKey = env.get('STREAMJS_API_KEY')
   .required()
   .asString()
