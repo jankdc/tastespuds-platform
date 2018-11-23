@@ -1,6 +1,7 @@
 import * as Koa from 'koa'
 import * as jwtDecode from 'jwt-decode'
 import * as auth0 from '../clients/auth0'
+import streamjs from '../clients/stream-js'
 import database from '../clients/database'
 import { createValidator } from '../input'
 
@@ -19,8 +20,6 @@ async function loginUser(ctx: Koa.Context) {
 
   const results = await auth0.authenticateUserFromOauth(code)
   const idToken = jwtDecode(results.id_token) as any
-
-  ctx.body = results
 
   const userResult = await database.queryViaFile(__dirname + '/getUser.sql', [
     idToken.sub
@@ -49,6 +48,10 @@ async function loginUser(ctx: Koa.Context) {
     idToken.picture,
     username
   ])
+
+  ctx.body = Object.assign({}, results, {
+    notification_token: streamjs.getReadOnlyToken('notification', idToken.sub)
+  })
 }
 
 export default [
