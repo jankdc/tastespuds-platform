@@ -9,7 +9,7 @@ async function likeReview(ctx: Koa.Context) {
   const cwp = (filename: string) => `${__dirname}/${filename}`
 
   await database.createTransaction(async (client) => {
-    const getUserQuery = 'SELECT * FROM tastespuds.user WHERE id $1'
+    const getUserQuery = 'SELECT * FROM tastespuds.user WHERE id = $1'
     const { rows: [ user ] } = await database.queryClientViaText(client, getUserQuery, [
       ctx.state.user.sub
     ])
@@ -39,7 +39,7 @@ async function likeReview(ctx: Koa.Context) {
     ctx.status = 200
     ctx.body = like
 
-    const notificationFeed = streamjs.feed('notification', like.reviewer_id)
+    const notificationFeed = streamjs.feed('notification', like.reviewer_id.replace('|', '_'))
     notificationFeed.addActivity({
       time: like.creation_date,
       verb: 'like',

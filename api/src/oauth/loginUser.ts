@@ -25,6 +25,10 @@ async function loginUser(ctx: Koa.Context) {
     idToken.sub
   ])
 
+  ctx.body = Object.assign({}, results, {
+    notification_token: streamjs.getReadOnlyToken('notification', idToken.sub.replace('|', '_'))
+  })
+
   if (userResult.rowCount > 0) {
     return
   }
@@ -48,10 +52,6 @@ async function loginUser(ctx: Koa.Context) {
     idToken.picture,
     username
   ])
-
-  ctx.body = Object.assign({}, results, {
-    notification_token: streamjs.getReadOnlyToken('notification', idToken.sub)
-  })
 }
 
 export default [
