@@ -1,6 +1,7 @@
 import * as Koa from 'koa'
 
 import database from '../clients/database'
+import streamjs from '../clients/stream-js'
 import checkJwt from '../check-jwt'
 import { createValidator } from '../input'
 
@@ -36,6 +37,17 @@ async function addComment(ctx: Koa.Context) {
   comment.context = {}
 
   ctx.body = comment
+
+  const notificationFeed = streamjs.feed('notification', comment.reviewer_id.replace('|', '_'))
+  notificationFeed.addActivity({
+    time: comment.creation_date,
+    verb: 'comment',
+    actor: comment.user.username,
+    object: 'Review',
+    icon_url: comment.reviewer_picture,
+    object_id: comment.review_id,
+    foreign_id: `comment:${comment.id}`,
+  })
 }
 
 export default [
