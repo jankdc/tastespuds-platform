@@ -49,7 +49,8 @@ async function likeReview(ctx: Koa.Context) {
       actor: user.username,
       object: 'Review',
       icon_url: like.reviewer_picture,
-      foreign_id: `like:${like.id}`
+      object_id: like.review_id,
+      foreign_id: `like:${like.id}`,
     })
   })
 }
