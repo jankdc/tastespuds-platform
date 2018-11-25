@@ -22,11 +22,14 @@ async function likeReview(ctx: Koa.Context) {
     const getLikeQuery = `
       SELECT
         lr.*,
-        r.user_id AS reviewer_id
+        r.user_id AS reviewer_id,
+        u.picture AS reviewer_picture
       FROM
         tastespuds.like_review lr
       INNER JOIN
         tastespuds.review r ON r.id = lr.review_id
+      INNER JOIN
+        tastespuds.user u ON u.id = lr.user_id
       WHERE
         lr.user_id = $1 AND lr.review_id = $2
     `
@@ -44,7 +47,9 @@ async function likeReview(ctx: Koa.Context) {
       time: like.creation_date,
       verb: 'like',
       actor: user.username,
-      object: 'Review'
+      object: 'Review',
+      icon_url: like.reviewer_picture,
+      foreign_id: `like:${like.id}`
     })
   })
 }

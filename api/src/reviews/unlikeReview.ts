@@ -2,6 +2,7 @@ import * as Koa from 'koa'
 
 import checkJwt from '../check-jwt'
 import database from '../clients/database'
+import streamjs from '../clients/stream-js'
 
 async function unlikeReview(ctx: Koa.Context) {
   // Current working directory path
@@ -9,8 +10,18 @@ async function unlikeReview(ctx: Koa.Context) {
 
   await database.createTransaction(async (client) => {
     const getLikeQuery = `
-      SELECT * FROM tastespuds.like_review
-      WHERE id = $1 AND review_id = $2
+      SELECT
+        lr.*,
+        r.user_id AS reviewer_id,
+        u.picture AS reviewer_picture
+      FROM
+        tastespuds.like_review lr
+      INNER JOIN
+        tastespuds.review r ON r.id = lr.review_id
+      INNER JOIN
+        tastespuds.user u ON u.id = lr.user_id
+      WHERE
+        lr.id = $1 AND lr.review_id = $2
     `
 
     const getLikeResult = await database.queryClientViaText(client, getLikeQuery, [
@@ -43,6 +54,11 @@ async function unlikeReview(ctx: Koa.Context) {
 
     ctx.status = 200
     ctx.body = like
+
+    const notificationFeed = streamjs.feed('notification', like.reviewer_id.replace('|', '_'))
+    notificationFeed.removeActivity({
+      foreignId: `like:${like.id}`
+    })
   })
 }
 
