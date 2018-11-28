@@ -31,5 +31,5 @@ If you ever want to try your new migration files against the existing container,
 
 ```
 # Usage:
-./scripts/dev.sh exec db ./migrate.sh
+./scripts/dev.sh exec api ./scripts/migrate.sh
 ```

@@ -7,8 +7,10 @@ start=`date +%s`
 export PGHOST=$POSTGRES_HOST
 
 apply_prelude() {
-  printf "\nApplying prelude commands...\n\n"
+  export PGUSER=$1
+  export PGPASSWORD=$2
 
+  printf "\nApplying prelude commands...\n\n"
   psql -1 -v ON_ERROR_STOP=1 <<-EOSQL
     CREATE SCHEMA IF NOT EXISTS tastespuds;
 
@@ -52,7 +54,9 @@ apply_migration() {
     fi
   done
 
-  apply_prelude
+  apply_prelude \
+    $POSTGRES_USER \
+    $POSTGRES_PASSWORD
 
   printf "\nApplying migrations to ${PGDATABASE}...\n\n"
 

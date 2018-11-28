@@ -2,8 +2,9 @@ version: '3.4'
 
 services:
   api:
-    build: api
-    dockerfile: api.dockerfile
+    build:
+      context: .
+      dockerfile: api.dockerfile
 
     environment:
       - PORT
@@ -33,8 +34,9 @@ services:
       - "8080:8080"
 
   db:
-    build: db
-    dockerfile: db.dockerfile
+    build:
+      context: .
+      dockerfile: db.dockerfile
 
     environment:
       - POSTGRES_DB

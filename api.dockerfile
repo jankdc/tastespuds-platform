@@ -3,7 +3,7 @@ FROM node:10-alpine
 ARG NODE_ENV=development
 
 RUN apk update && apk upgrade && \
-    apk add --no-cache bash git openssh
+    apk add --no-cache bash git openssh postgresql-client
 
 WORKDIR /node
 COPY package.json package-lock.json ./
