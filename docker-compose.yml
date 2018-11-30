@@ -12,6 +12,7 @@ services:
       - JWKS_AUD
       - JWKS_HOST
       - DATABASE_URL
+      - DATABASE_TEST_URL
       - AUTH0_CLIENT_ID
       - AUTH0_DOMAIN_URL
       - AUTH0_REDIRECT_URL
@@ -22,13 +23,6 @@ services:
       - STREAMJS_APP_ID
       - STREAMJS_API_KEY
       - STREAMJS_API_SECRET
-
-      # Database Migration
-      - POSTGRES_DB
-      - POSTGRES_HOST
-      - POSTGRES_USER
-      - POSTGRES_TEST_DB
-      - POSTGRES_PASSWORD
 
     ports:
       - "8080:8080"
