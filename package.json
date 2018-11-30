@@ -16,6 +16,17 @@
     "node": "=>7.6"
   },
   "dependencies": {
+    "@types/got": "^8.3.3",
+    "@types/jest": "^23.3.1",
+    "@types/jwt-decode": "^2.2.1",
+    "@types/koa": "^2.0.46",
+    "@types/koa-bodyparser": "^5.0.1",
+    "@types/koa-multer": "^1.0.0",
+    "@types/koa-router": "^7.0.31",
+    "@types/node-geocoder": "^3.19.0",
+    "@types/pg": "^7.4.10",
+    "@types/supertest": "^2.0.5",
+    "@types/uuid": "^3.4.4",
     "ajv": "^6.5.4",
     "env-var": "^3.3.0",
     "getstream": "^3.23.1",
@@ -30,26 +41,15 @@
     "node-geocoder": "^3.22.0",
     "pg": "^7.4.3",
     "squel": "5.12.2",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.0.3",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "@types/got": "^8.3.3",
-    "@types/jest": "^23.3.1",
-    "@types/jwt-decode": "^2.2.1",
-    "@types/koa": "^2.0.46",
-    "@types/koa-bodyparser": "^5.0.1",
-    "@types/koa-multer": "^1.0.0",
-    "@types/koa-router": "^7.0.31",
-    "@types/node-geocoder": "^3.19.0",
-    "@types/pg": "^7.4.10",
-    "@types/supertest": "^2.0.5",
-    "@types/uuid": "^3.4.4",
     "jest": "^23.5.0",
     "nodemon": "^1.18.4",
     "supertest": "^3.3.0",
     "ts-jest": "^23.1.4",
-    "ts-node": "^7.0.1",
-    "tslint": "5.11.0",
-    "typescript": "^3.0.3"
+    "tslint": "5.11.0"
   }
 }
