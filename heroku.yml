@@ -7,3 +7,7 @@ build:
     web: api.dockerfile
   config:
     NODE_ENV: production
+release:
+  image: web
+  command:
+    - ./scripts/migrate.sh
