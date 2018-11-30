@@ -5,12 +5,28 @@ set -e
 start=`date +%s`
 
 export PGHOST=$POSTGRES_HOST
+export PGUSER=$POSTGRES_USER
+export PGPASSWORD=$POSTGRES_PASSWORD
+
+connect_to_db() {
+  echo "Connecting to '${PGHOST}' as '${PGUSER}'..."
+  for i in 1 2 4 8 16 32 64
+  do
+    if ! psql -w -c '\conninfo' 1>/dev/null; then
+      if [ $i == 64 ]; then
+        echo "Unable to connect to '${PGHOST}'."
+        exit 1
+      else
+        sleep "${i}s"
+      fi
+    else
+      break
+    fi
+  done
+}
 
 apply_prelude() {
-  export PGUSER=$1
-  export PGPASSWORD=$2
-
-  printf "\nApplying prelude commands...\n\n"
+  printf "Applying prelude commands to '${PGDATABASE}'...\n\n"
   psql -1 -v ON_ERROR_STOP=1 <<-EOSQL
     CREATE SCHEMA IF NOT EXISTS tastespuds;
 
@@ -31,35 +47,16 @@ apply_prelude() {
         tastespuds.db_version;
 EOSQL
 
-  printf "\n\nPrelude commands applied.\n\n"
+  printf "Prelude commands applied.\n\n"
 }
 
 apply_migration() {
-  export PGUSER=$1
-  export PGPASSWORD=$2
-  export PGDATABASE=$3
+  export PGDATABASE=$1
 
-  echo "Connecting to ${PGHOST}..."
-  for i in 1 2 4 8 16 32 64
-  do
-    if ! psql -w -c '\conninfo' 1>/dev/null; then
-      if [ $i == 64 ]; then
-        echo "Unable to connect to ${PGHOST}."
-        exit 1
-      else
-        sleep "${i}s"
-      fi
-    else
-      break
-    fi
-  done
+  connect_to_db
+  apply_prelude
 
-  apply_prelude \
-    $POSTGRES_USER \
-    $POSTGRES_PASSWORD
-
-  printf "\nApplying migrations to ${PGDATABASE}...\n\n"
-
+  printf "Applying migrations to '${PGDATABASE}'...\n\n"
   for migration in `ls -v migrations/*.sql`
   do
     VERSION=$(basename $migration)
@@ -77,20 +74,16 @@ apply_migration() {
     fi
   done
 
-  printf "\nMigrations applied.\n"
-  printf "\nMigrated in $((`date +%s` - $start))s\n\n"
+  printf "Migrations applied.\n"
+  printf "Migrated in $((`date +%s` - $start))s\n\n"
 }
 
-apply_migration \
-  $POSTGRES_USER \
-  $POSTGRES_PASSWORD \
-  $POSTGRES_DB
+apply_migration $POSTGRES_DB
 
 if [[ -n "$POSTGRES_TEST_DB" ]]; then
-  apply_migration \
-    $POSTGRES_USER \
-    $POSTGRES_PASSWORD \
-    $POSTGRES_TEST_DB
+  apply_migration $POSTGRES_TEST_DB
 else
-  printf "\nSkipping test database migration.\n"
+  printf "Skipping test database migration.\n"
 fi
+
+printf "Migration complete.\n"
