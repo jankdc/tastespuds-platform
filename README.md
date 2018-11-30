@@ -10,6 +10,10 @@ When you're done with that, run this:
 
 `./scripts/dev.sh up -d --build`
 
+and this:
+
+`./scripts/dev.sh exec api ./scripts/migrate.sh`
+
 You should be good to go!
 
 ## Teardown
