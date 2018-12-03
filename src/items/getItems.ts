@@ -85,7 +85,7 @@ async function getItems(ctx: Koa.Context) {
     .left_join('tastespuds.like_review', 'lr', 'r.id = lr.review_id')
 
   if (ctx.query.keyword) {
-    baseSql.where('i.name % ? OR i.search_tsv @@ to_tsquery(?)',
+    baseSql.where('i.name % ? OR i.search_tsv @@ plainto_tsquery(?)',
       ctx.query.keyword,
       ctx.query.keyword
     )
