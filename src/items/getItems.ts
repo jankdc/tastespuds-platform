@@ -100,7 +100,7 @@ async function getItems(ctx: Koa.Context) {
   }
 
   if (parsedLocation) {
-    baseSql.where('dist_diff_in_km(i.location, ?) < 5', parsedLocation)
+    baseSql.where('dist_diff_in_km(p.location, ?::float[]) < 5', [parsedLocation])
   }
 
   baseSql.group('i.id')
