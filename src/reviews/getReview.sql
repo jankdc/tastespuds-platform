@@ -1,5 +1,6 @@
 SELECT
   r.id,
+  r.price,
   r.rating,
   r.content,
   r.highlight,

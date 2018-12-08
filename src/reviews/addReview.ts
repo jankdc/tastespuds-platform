@@ -30,6 +30,9 @@ const inputSchema = {
     suggestion: {
       type: 'string'
     },
+    price: {
+      type: 'number'
+    },
     item: {
       oneOf: [
         { type: 'integer' },
@@ -56,6 +59,7 @@ const inputSchema = {
     'assets',
     'rating',
     'content',
+    'price',
     'item'
   ]
 }
@@ -83,7 +87,8 @@ async function addReview(ctx: Koa.Context) {
       body.rating,
       body.item,
       body.highlight,
-      body.suggestion
+      body.suggestion,
+      body.price
     ])
 
     await Promise.all(body.assets.map((assetId: number) => {

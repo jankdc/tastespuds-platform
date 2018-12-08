@@ -76,6 +76,8 @@ async function getItems(ctx: Koa.Context) {
     .field(highlightSql, 'highlight')
     .field('COUNT(r.*)', 'reviews')
     .field('COUNT(lr.*)', 'likes')
+    .field('MIN(r.price)', 'min_price')
+    .field('MAX(r.price)', 'max_price')
     .field('AVG(r.rating)', 'rating')
     .field('json_agg(p.*)->0', 'place')
     .field('COUNT(r.*) + COUNT(lr.*)', 'popularity')
