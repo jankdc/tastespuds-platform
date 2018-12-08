@@ -40,5 +40,7 @@ LEFT JOIN
   tastespuds.like_review l ON r.id = l.review_id
 WHERE
   r.creation_date > now() - INTERVAL '7 days'
+AND
+  dist_diff_in_km(p.location, $1::float[]) < 5
 GROUP BY
   r.id

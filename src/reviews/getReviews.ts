@@ -22,18 +22,22 @@ interface UserLocation {
 
 async function getReviews(ctx: Koa.Context) {
   const parsedQs = ctx.query.location.split(',')
-  const results = await database.queryViaFile(__dirname + '/getReviews.sql')
+
+  const userLocation: UserLocation = {
+    lat: parseFloat(parsedQs[0]),
+    lng: parseFloat(parsedQs[1])
+  }
+
+  const results = await database.queryViaFile(__dirname + '/getReviews.sql', [
+    [userLocation.lat, userLocation.lng]
+  ])
+
   const reviews = results.rows
 
   if (results.rowCount === 0) {
     ctx.status = 200
     ctx.body = []
     return
-  }
-
-  const userLocation: UserLocation = {
-    lat: parseFloat(parsedQs[0]),
-    lng: parseFloat(parsedQs[1])
   }
 
   const furthestKm = furthestDistanceInKm(reviews, userLocation)
