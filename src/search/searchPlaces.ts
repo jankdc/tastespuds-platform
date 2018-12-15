@@ -1,9 +1,8 @@
 import * as Koa from 'koa'
-import { PoolClient } from 'pg'
 
+import sqb from '../sql-builder'
 import database from '../clients/database'
 import checkJwt from '../check-jwt'
-import * as gplaces from '../clients/google-places'
 import { createValidator } from '../input'
 
 const inputSchema = {
@@ -11,61 +10,50 @@ const inputSchema = {
   properties: {
     location: {
       type: 'string'
+    },
+    keyword: {
+      type: 'string'
     }
   },
-  required: ['location']
+  oneOf: [
+    { required: ['location'] },
+    { required: ['keyword'] }
+  ],
+  additionalProperties: false
 }
 
 async function searchPlaces(ctx: Koa.Context) {
-  const parsedQs = ctx.query.location.split(',')
-  const userLocation = {
-    lat: parseFloat(parsedQs[0]),
-    lng: parseFloat(parsedQs[1])
+  let parsedLocation
+
+  if (ctx.query.location) {
+    const parsedQs = ctx.query.location.split(',')
+    parsedLocation = [
+      parseFloat(parsedQs[0]),
+      parseFloat(parsedQs[1])
+    ]
   }
 
-  await database.createTransaction(async (client) => {
-    const googlePlaces = await gplaces.searchNearby(userLocation)
+  const query = sqb.select()
+    .from('tastespuds.place')
+    .field('*')
 
-    ctx.body = await Promise.all(googlePlaces.map(async (place) => {
-      const existingPlace = await searchGooglePlace(client, place)
+  if (ctx.query.keyword) {
+    query.where('search_tsv @@ plainto_tsquery(?)',
+      ctx.query.keyword
+    )
+  }
 
-      if (existingPlace) {
-        return existingPlace
-      }
+  if (parsedLocation) {
+    query.where('dist_diff_in_km(location, ?::float[]) < 1', [parsedLocation])
+  }
 
-      return insertGooglePlace(client, place)
-    }))
-  })
-}
+  query.order('dist_diff_in_km(location, ?::float[])', true, [parsedLocation])
+  query.limit(10)
 
-async function searchGooglePlace(client: PoolClient, place: gplaces.Place) {
-  const dbArgs = [`google|${place.place_id}`]
-  const filePath = __dirname + '/searchPlace.sql'
-  const { rows } = await database.queryClientViaFile(client, filePath, dbArgs)
+  const { text, values } = query.toParam()
+  const results = await database.queryViaText(text, values)
 
-  return rows[0]
-}
-
-async function insertGooglePlace(client: PoolClient, place: gplaces.Place) {
-  const { result: details } = await gplaces.getPlaceDetails(place.place_id, {
-    fields: 'address_components'
-  })
-
-  const address = gplaces.parseAddress(details.address_components)
-
-  const filePath = __dirname + '/insertPlace.sql'
-  const { rows } = await database.queryClientViaFile(client, filePath, [
-    place.name,
-    place.types,
-    [place.geometry.location.lat, place.geometry.location.lng],
-    address.street,
-    address.city,
-    address.country,
-    address.postal_code,
-    `google|${place.place_id}`
-  ])
-
-  return rows[0]
+  ctx.body = results.rows
 }
 
 export default [
